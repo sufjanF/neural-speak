@@ -18,7 +18,7 @@ import AppSidebar from '~/components/sidebar/app-sidebar';
 
 export const metadata: Metadata = {
   title: "Neural Speak",
-  description: "A platform for AI-powered speech synthesis and voice cloning.",
+  description: "A platform for AI-powered speech synthesis",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
