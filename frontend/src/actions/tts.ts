@@ -23,7 +23,7 @@ interface GenerateSpeechResult {
 }
 
 const S3_BUCKET_URL =
-  "https://ai-voice-studio-sahand.s3.ap-southeast-2.amazonaws.com";
+  "https://neural-speak-sufjan.s3.us-east-2.amazonaws.com";
 
 export async function generateSpeech(
   data: GenerateSpeechData,
@@ -93,7 +93,7 @@ export async function generateSpeech(
         audioUrl,
         s3Key: result.s3_Key,
         language: data.language,
-        voiceS3Key: data.voice_S3_key,
+        voiceS3key: data.voice_S3_key,
         exaggeration: data.exaggeration,
         cfgWeight: data.cfg_weight,
         userId: session.user.id,

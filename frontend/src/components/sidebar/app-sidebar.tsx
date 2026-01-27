@@ -30,7 +30,7 @@ export default async function AppSidebar() {
             >
               <Sparkles className="text-primary h-6 w-6" />
               <p className="from-primary to-primary/70 bg-gradient-to-r bg-clip-text text-2xl font-bold tracking-tight text-transparent">
-                Neural Voice
+                Neural Speak
               </p>
             </Link>
             <p className="text-muted-foreground ml-8 text-sm font-medium tracking-wide">
