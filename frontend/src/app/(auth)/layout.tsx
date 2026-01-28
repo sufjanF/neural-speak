@@ -31,8 +31,8 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
                 <span className="text-violet-200">Natural Speech</span>
               </h1>
               <p className="mb-8 text-lg leading-relaxed text-violet-100/90">
-                Join thousands of creators using advanced AI to generate
-                realistic, natural-sounding voices in seconds.
+                Generate realistic, natural-sounding voices from text in
+                seconds using advanced AI.
               </p>
 
               {/* Feature List */}
@@ -66,24 +66,6 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
                     </span>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            {/* Bottom Stats */}
-            <div className="mt-16 grid grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-violet-200">10K+</div>
-                <div className="text-sm text-violet-300/70">
-                  Voices Generated
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-violet-200">2.5K+</div>
-                <div className="text-sm text-violet-300/70">Happy Users</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-amber-300">4.8★</div>
-                <div className="text-sm text-violet-300/70">Rating</div>
               </div>
             </div>
           </div>

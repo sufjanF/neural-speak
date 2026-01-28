@@ -11,6 +11,7 @@ Full-stack text-to-speech SaaS. Next.js 16 frontend, Python backend for serverle
 - Credits-based billing and subscriptions
 - Email and social authentication
 - Audio storage on S3, metadata in PostgreSQL
+- Mobile-friendly responsive UI
 
 ## Tech Stack
 
