@@ -2,6 +2,8 @@
 
 Full-stack text-to-speech SaaS. Next.js 16 frontend, Python backend for serverless AI inference. Users can generate speech in multiple languages, clone voices, and manage their audio projects.
 
+**Live:** https://neural-speak.vercel.app/
+
 ## Features
 
 - Serverless TTS using the Chatterbox model
