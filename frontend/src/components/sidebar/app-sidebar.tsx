@@ -33,9 +33,6 @@ export default async function AppSidebar() {
                 Neural Speak
               </p>
             </Link>
-            <p className="text-muted-foreground ml-8 text-sm font-medium tracking-wide">
-              Studio
-            </p>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">

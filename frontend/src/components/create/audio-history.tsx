@@ -22,13 +22,9 @@ export default function AudioHistory({
     <div className="border-t border-gray-200 bg-white px-2 py-3 sm:px-4 sm:py-4">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 text-center">
-          <div className="mb-2 inline-flex items-center gap-2">
-            <div className="h-6 w-0.5 rounded-full bg-gradient-to-b from-blue-500 to-purple-600"></div>
-            <h2 className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-xl font-bold text-transparent">
-              Recent Generations
-            </h2>
-            <div className="h-6 w-0.5 rounded-full bg-gradient-to-b from-purple-600 to-blue-500"></div>
-          </div>
+          <h2 className="mb-2 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-xl font-bold text-transparent">
+            Recent Generations
+          </h2>
           <p className="text-muted-foreground mx-auto max-w-md text-sm">
             Your speech generation history
           </p>
