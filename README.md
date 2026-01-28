@@ -1,8 +1,17 @@
 # Neural Speak
 
-Full-stack text-to-speech SaaS. Next.js 16 frontend, Python backend for serverless AI inference. Users can generate speech in multiple languages, clone voices, and manage their audio projects.
+Production-ready, full-stack text-to-speech SaaS. Next.js 16 frontend, Python backend for serverless AI inference. Users can generate speech in multiple languages, clone voices, and manage their audio projects.
 
 **Live:** https://neural-speak.vercel.app/
+
+## Features
+
+- Serverless TTS using the Chatterbox model
+- Multi-language support with voice cloning
+- Credits-based billing and subscriptions
+- Email and social authentication
+- Audio storage on S3, metadata in PostgreSQL
+- Mobile-friendly responsive UI
 
 ## Screenshots
 
@@ -25,15 +34,6 @@ Full-stack text-to-speech SaaS. Next.js 16 frontend, Python backend for serverle
   <img src="settings.png" alt="Settings" width="800" />
 </p>
 <p align="center"><em>Settings - Configure your account preferences</em></p>
-
-## Features
-
-- Serverless TTS using the Chatterbox model
-- Multi-language support with voice cloning
-- Credits-based billing and subscriptions
-- Email and social authentication
-- Audio storage on S3, metadata in PostgreSQL
-- Mobile-friendly responsive UI
 
 ## Tech Stack
 
