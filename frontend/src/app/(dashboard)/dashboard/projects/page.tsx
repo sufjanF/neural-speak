@@ -122,8 +122,8 @@ export default function Projects() {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="text-primary h-8 w-8 animate-spin" />
-          <p className="text-muted-foreground text-sm">
+          <Loader2 className="h-8 w-8 animate-spin text-rose-400" />
+          <p className="text-sm text-muted-foreground">
             Loading your projects...
           </p>
         </div>
@@ -138,10 +138,10 @@ export default function Projects() {
         <div className="space-y-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-2">
-              <h1 className="from-primary to-primary/70 bg-gradient-to-r bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
+              <h1 className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
                 Your Audio Projects
               </h1>
-              <p className="text-muted-foreground text-base">
+              <p className="text-base text-muted-foreground">
                 Manage and organize all your text-to-speech audio (
                 {filteredProjects.length}{" "}
                 {filteredProjects.length === 1 ? "audio" : "audios"})
@@ -149,28 +149,28 @@ export default function Projects() {
             </div>
             <Button
               onClick={() => router.push("/dashboard/create")}
-              className="gap-2 self-start sm:self-auto"
+              className="gap-2 self-start bg-gradient-to-r from-cyan-500 to-emerald-500 text-white hover:from-cyan-400 hover:to-emerald-400 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20 sm:self-auto"
             >
               <Plus className="h-4 w-4" />
               New Audio
             </Button>
           </div>
-          <Card>
+          <Card className="border-border/30 bg-card/50 backdrop-blur-sm">
             <CardContent className="p-4">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="relative max-w-md flex-1">
-                  <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     placeholder="Search audio projects..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9"
+                    className="border-border/30 bg-muted/50 pl-9 focus:border-rose-400/40"
                   />
                 </div>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortBy)}
-                  className="border-input bg-background rounded-md border px-3 py-2 text-sm"
+                  className="rounded-md border border-border/30 bg-muted/50 px-3 py-2 text-sm text-foreground focus:border-rose-400/40 focus:outline-none"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
@@ -182,18 +182,18 @@ export default function Projects() {
 
           {filteredProjects.length === 0 ? (
             <>
-              <Card>
+              <Card className="border-border/30 bg-card/50 backdrop-blur-sm">
                 <CardContent className="flex flex-col items-center justify-center py-16 text-center">
                   <div className="relative mb-6">
-                    <div className="border-muted bg-muted/20 flex h-24 w-24 items-center justify-center rounded-full border-2 border-dashed">
-                      <Music className="text-muted-foreground h-10 w-10" />
+                    <div className="flex h-24 w-24 items-center justify-center rounded-sm border-2 border-dashed border-border/30 bg-rose-400/10">
+                      <Music className="h-10 w-10 text-muted-foreground" />
                     </div>
                   </div>
-                  <h3 className="mb-2 text-xl font-semibold">
+                  <h3 className="mb-2 text-xl font-semibold text-foreground">
                     {searchQuery ? "No audio found" : "No audio projects yet"}
                   </h3>
 
-                  <p className="text-muted-foreground mb-6 max-w-md text-sm">
+                  <p className="mb-6 max-w-md text-sm text-muted-foreground">
                     {searchQuery
                       ? `No audio matches "${searchQuery}". Try adjusting your search terms.`
                       : "Start creating text-to-speech audio to see them here."}
@@ -201,7 +201,7 @@ export default function Projects() {
                   {!searchQuery && (
                     <Button
                       onClick={() => router.push("/dashboard/create")}
-                      className="gap-2"
+                      className="gap-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white hover:from-cyan-400 hover:to-emerald-400 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20"
                     >
                       <Plus className="h-4 w-4" />
                       Create Your First Audio
@@ -212,7 +212,7 @@ export default function Projects() {
                     <Button
                       variant="outline"
                       onClick={() => setSearchQuery("")}
-                      className="gap-2"
+                      className="gap-2 border-border/30 hover:border-rose-400/30 hover:bg-rose-400/10"
                     >
                       Clear Search
                     </Button>
@@ -226,17 +226,17 @@ export default function Projects() {
                 {filteredProjects.map((project) => (
                   <Card
                     key={project.id}
-                    className="group transition-all hover:shadow-md"
+                    className="group border-border/30 bg-card/50 backdrop-blur-sm transition-all hover:border-rose-400/30"
                   >
                     <CardContent className="flex items-center gap-4 p-4">
-                      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-gradient-to-br from-purple-500/10 to-pink-500/10">
-                        <Music className="text-muted-foreground h-8 w-8" />
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-border/30 bg-gradient-to-br from-rose-400/10 to-rose-500/10">
+                        <Music className="h-8 w-8 text-rose-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-muted-foreground mb-2 line-clamp-2 text-sm">
+                        <p className="mb-2 line-clamp-2 text-sm text-foreground/80">
                           {project.text}
                         </p>
-                        <div className="text-muted-foreground flex items-center gap-4 text-xs">
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
                             {new Date(project.createdAt).toLocaleDateString()}
@@ -259,7 +259,7 @@ export default function Projects() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-8 w-8 p-0"
+                          className="h-8 w-8 p-0 hover:bg-rose-400/10 hover:text-rose-400"
                           onClick={(e) =>
                             handleDownload(project.audioUrl, project.name, e)
                           }
@@ -269,7 +269,7 @@ export default function Projects() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-destructive h-8 w-8 p-0"
+                          className="h-8 w-8 p-0 text-destructive hover:bg-destructive/10"
                           onClick={(e) => handleDelete(project.id, e)}
                         >
                           <Trash2 className="h-4 w-4" />

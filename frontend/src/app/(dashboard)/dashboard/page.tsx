@@ -39,6 +39,7 @@ interface UserStats {
   thisMonth: number;
   thisWeek: number;
 }
+
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [audioProjects, setAudioProjects] = useState<AudioProject[]>([]);
@@ -96,8 +97,8 @@ export default function Dashboard() {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="text-primary h-8 w-8 animate-spin" />
-          <p className="text-muted-foreground text-sm">
+          <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
+          <p className="text-sm text-muted-foreground">
             Loading your dashboard...
           </p>
         </div>
@@ -109,67 +110,80 @@ export default function Dashboard() {
     <>
       <RedirectToSignIn />
       <SignedIn>
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <h1 className="from-primary to-primary/70 bg-gradient-to-r bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
+        <div className="space-y-5">
+          <div className="space-y-1.5">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Welcome back{user?.name ? `, ${user.name}` : ""}!
             </h1>
-            <p className="text-muted-foreground text-base sm:text-lg">
+            <p className="text-sm text-muted-foreground">
               Here&apos;s an overview of your Text-to-Speech workspace
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Card className="relative overflow-hidden">
+
+          {/* Stats Grid */}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Card className="relative overflow-hidden border-border/20 bg-card/40 backdrop-blur-sm transition-all duration-300 hover:border-border/30">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-xs font-medium text-muted-foreground">
                   Total Audio
                 </CardTitle>
-                <Music className="h-4 w-4 text-purple-500" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-rose-500/10">
+                  <Music className="h-3.5 w-3.5 text-rose-400" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="text-xl font-bold text-foreground">
                   {userStats.totalAudioProjects}
                 </div>
-                <p className="text-muted-foreground text-xs">TTS generations</p>
+                <p className="text-xs text-muted-foreground">TTS generations</p>
               </CardContent>
             </Card>
-            <Card className="relative overflow-hidden">
+
+            <Card className="relative overflow-hidden border-border/20 bg-card/40 backdrop-blur-sm transition-all duration-300 hover:border-border/30">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-xs font-medium text-muted-foreground">
                   This Month
                 </CardTitle>
-                <Calendar className="h-4 w-4 text-blue-500" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-amber-500/10">
+                  <Calendar className="h-3.5 w-3.5 text-amber-400" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="text-xl font-bold text-foreground">
                   {userStats.thisMonth}
                 </div>
-                <p className="text-muted-foreground text-xs">
+                <p className="text-xs text-muted-foreground">
                   Projects created
                 </p>
               </CardContent>
             </Card>
-            <Card className="relative overflow-hidden">
+
+            <Card className="relative overflow-hidden border-border/20 bg-card/40 backdrop-blur-sm transition-all duration-300 hover:border-border/30">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">This Week</CardTitle>
-                <TrendingUp className="h-4 w-4 text-green-500" />
+                <CardTitle className="text-xs font-medium text-muted-foreground">This Week</CardTitle>
+                <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-emerald-500/10">
+                  <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-xl font-bold text-foreground">
                   {userStats.thisWeek}
                 </div>
-                <p className="text-muted-foreground text-xs">Recent activity</p>
+                <p className="text-xs text-muted-foreground">Recent activity</p>
               </CardContent>
             </Card>
-            <Card className="relative overflow-hidden">
+
+            <Card className="relative overflow-hidden border-border/20 bg-card/40 backdrop-blur-sm transition-all duration-300 hover:border-border/30">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-xs font-medium text-muted-foreground">
                   Member Since
                 </CardTitle>
-                <Star className="h-4 w-4 text-yellow-500" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-cyan-500/10">
+                  <Star className="h-3.5 w-3.5 text-cyan-400" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-yellow-600">
+                <div className="text-xl font-bold text-foreground">
                   {user?.createdAt
                     ? new Date(
                         user.createdAt as string | number | Date,
@@ -179,53 +193,57 @@ export default function Dashboard() {
                       })
                     : "N/A"}
                 </div>
-                <p className="text-muted-foreground text-xs">Account created</p>
+                <p className="text-xs text-muted-foreground">Account created</p>
               </CardContent>
             </Card>
           </div>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="text-primary h-5 w-5" />
+
+          {/* Quick Actions */}
+          <Card className="border-border/20 bg-card/40 backdrop-blur-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <Sparkles className="h-4 w-4 text-cyan-400" />
                 Quick Actions
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <Button
                   onClick={() => router.push("/dashboard/create")}
-                  className="group h-auto flex-col gap-2 bg-purple-600 p-6 hover:bg-purple-700"
+                  className="group h-auto flex-col gap-2 gradient-shift p-5 text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
                 >
-                  <Mic className="h-8 w-8 transition-transform group-hover:scale-110" />
+                  <Mic className="h-7 w-7 transition-transform group-hover:scale-110" />
                   <div className="text-center">
-                    <div className="font-semibold">Text-to-Speech</div>
+                    <div className="text-sm font-semibold">Text-to-Speech</div>
                     <div className="text-xs opacity-80">
                       Generate audio with voice cloning
                     </div>
                   </div>
                 </Button>
+
                 <Button
                   onClick={() => router.push("/dashboard/projects")}
                   variant="outline"
-                  className="group hover:bg-muted h-auto flex-col gap-2 p-6"
+                  className="group h-auto flex-col gap-2 border-border/20 bg-card/50 p-5 transition-all duration-200 hover:border-amber-500/30 hover:bg-accent"
                 >
-                  <Music className="h-8 w-8 transition-transform group-hover:scale-110" />
+                  <Music className="h-7 w-7 text-muted-foreground transition-transform group-hover:scale-110 group-hover:text-amber-400" />
                   <div className="text-center">
-                    <div className="font-semibold">View All Audio</div>
-                    <div className="text-xs opacity-70">
+                    <div className="text-sm font-semibold text-foreground">View All Audio</div>
+                    <div className="text-xs text-muted-foreground">
                       Browse your audio library
                     </div>
                   </div>
                 </Button>
+
                 <Button
                   onClick={() => router.push("/dashboard/settings")}
                   variant="outline"
-                  className="group hover:bg-muted h-auto flex-col gap-2 p-6"
+                  className="group h-auto flex-col gap-2 border-border/20 bg-card/50 p-5 transition-all duration-200 hover:border-emerald-500/30 hover:bg-accent"
                 >
-                  <Settings className="h-8 w-8 transition-transform group-hover:scale-110" />
+                  <Settings className="h-7 w-7 text-muted-foreground transition-transform group-hover:scale-110 group-hover:text-emerald-400" />
                   <div className="text-center">
-                    <div className="font-semibold">Account Settings</div>
-                    <div className="text-xs opacity-70">
+                    <div className="text-sm font-semibold text-foreground">Account Settings</div>
+                    <div className="text-xs text-muted-foreground">
                       Manage your profile
                     </div>
                   </div>
@@ -233,10 +251,12 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Music className="h-5 w-5 text-purple-600" />
+
+          {/* Recent Audio Projects */}
+          <Card className="border-border/20 bg-card/40 backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <Music className="h-4 w-4 text-rose-400" />
                 Recent Audio Projects
               </CardTitle>
               {audioProjects.length > 0 && (
@@ -244,78 +264,74 @@ export default function Dashboard() {
                   variant="ghost"
                   size="sm"
                   onClick={() => router.push("/dashboard/projects")}
-                  className="text-purple-600 hover:text-purple-700"
+                  className="text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300"
                 >
-                  View All <ArrowRight className="ml-1 h-4 w-4" />
+                  View All <ArrowRight className="ml-1 h-3.5 w-3.5" />
                 </Button>
               )}
             </CardHeader>
             <CardContent>
               {audioProjects.length === 0 ? (
-                <>
-                  <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <div className="relative mb-4">
-                      <div className="border-muted bg-muted/20 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed">
-                        <Music className="text-muted-foreground h-8 w-8" />
+                <div className="flex flex-col items-center justify-center py-10 text-center">
+                  <div className="relative mb-4">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-sm border-2 border-dashed border-border/20 bg-muted/20">
+                      <Music className="h-7 w-7 text-muted-foreground" />
+                    </div>
+                  </div>
+                  <h3 className="mb-1.5 text-base font-semibold text-foreground">
+                    No audio projects yet
+                  </h3>
+                  <p className="mb-4 text-sm text-muted-foreground">
+                    Start generating speech with AI voice cloning
+                  </p>
+                  <Button
+                    onClick={() => router.push("/dashboard/create")}
+                    className="gap-2 gradient-shift text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+                  >
+                    <Mic className="h-4 w-4" />
+                    Create Your First Audio
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {audioProjects.slice(0, 5).map((audio) => (
+                    <div
+                      key={audio.id}
+                      className="group flex items-center gap-3 rounded-sm border border-border/20 bg-muted/10 p-3 transition-all duration-200 hover:border-cyan-500/20 hover:bg-muted/20"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm gradient-shift">
+                        <Music className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="truncate text-sm font-medium text-foreground">
+                          {audio.name ??
+                            audio.text.substring(0, 50) +
+                              (audio.text.length > 50 ? "..." : "")}
+                        </h4>
+                        <div className="mt-0.5 flex items-center gap-2">
+                          <p className="text-xs text-muted-foreground">
+                            {audio.language.toUpperCase()}
+                          </p>
+                          <span className="text-xs text-muted-foreground">
+                            •
+                          </span>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(audio.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="shrink-0">
+                        <audio
+                          src={audio.audioUrl}
+                          controls
+                          className="h-8"
+                          style={{ width: "180px" }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
                       </div>
                     </div>
-                    <h3 className="mb-2 text-lg font-semibold">
-                      No audio projects yet
-                    </h3>
-                    <p className="text-muted-foreground mb-4 text-sm">
-                      Start generating speech with AI voice cloning
-                    </p>
-                    <Button
-                      onClick={() => router.push("/dashboard/create")}
-                      className="gap-2 bg-purple-600 hover:bg-purple-700"
-                    >
-                      <Mic className="h-4 w-4" />
-                      Create Your First Audio
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="space-y-3">
-                    {audioProjects.slice(0, 5).map((audio) => (
-                      <div
-                        key={audio.id}
-                        className="group hover:bg-muted/50 flex items-center gap-4 rounded-lg border p-4 transition-all hover:shadow-sm"
-                      >
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-purple-100">
-                          <Music className="h-6 w-6 text-purple-600" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <h4 className="truncate text-sm font-medium">
-                            {audio.name ??
-                              audio.text.substring(0, 50) +
-                                (audio.text.length > 50 ? "..." : "")}
-                          </h4>
-                          <div className="mt-1 flex items-center gap-2">
-                            <p className="text-muted-foreground text-xs">
-                              {audio.language.toUpperCase()}
-                            </p>
-                            <span className="text-muted-foreground text-xs">
-                              •
-                            </span>
-                            <p className="text-muted-foreground text-xs">
-                              {new Date(audio.createdAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="shrink-0">
-                          <audio
-                            src={audio.audioUrl}
-                            controls
-                            className="h-8"
-                            style={{ width: "200px" }}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
+                  ))}
+                </div>
               )}
             </CardContent>
           </Card>

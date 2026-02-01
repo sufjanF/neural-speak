@@ -224,7 +224,7 @@ export default function CreatePage() {
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-rose-400" />
       </div>
     );
   }
@@ -233,13 +233,13 @@ export default function CreatePage() {
     <>
       <RedirectToSignIn />
       <SignedIn>
-        <div className="border-b border-gray-200 bg-white py-2">
+        <div className="border-b border-border/30 bg-card/30 py-2">
           <div className="mx-auto max-w-7xl text-center">
-            <h1 className="from-primary to-primary/70 mb-1 bg-gradient-to-r bg-clip-text text-lg font-bold text-transparent">
+            <h1 className="text-gradient mb-1 text-lg font-bold">
               Text-to-Speech Generator
             </h1>
-            <p className="text-muted-foreground mx-auto max-w-xl text-xs">
-              Generate natural-sounding speech in 23 languages with voice
+            <p className="mx-auto max-w-xl text-xs text-muted-foreground">
+              Generate natural-sounding speech in 24 languages with voice
               cloning
             </p>
           </div>

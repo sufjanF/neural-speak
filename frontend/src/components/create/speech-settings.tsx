@@ -47,26 +47,26 @@ export default function SpeechSettings({
 }: SpeechSettingsProps) {
   const creditsNeeded = Math.max(1, Math.ceil(text.length / 100));
   return (
-    <Card className="shadow-lg">
+    <Card className="border-border/20 bg-card/50 shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-border/30">
       <CardContent className="p-2 sm:p-3">
         <div className="mb-3 flex items-start justify-between">
           <div>
-            <h3 className="mb-0.5 text-sm font-bold">Settings</h3>
-            <p className="text-muted-foreground text-xs">
+            <h3 className="mb-0.5 text-sm font-semibold text-foreground">Settings</h3>
+            <p className="text-xs text-muted-foreground">
               Customize your speech
             </p>
           </div>
         </div>
         <div className="space-y-3">
           <div>
-            <label className="mb-1 flex items-center gap-1 text-xs font-semibold">
-              <Globe className="h-3 w-3" />
+            <label className="mb-1 flex items-center gap-1 text-xs font-medium text-foreground">
+              <Globe className="h-3 w-3 text-orange-400" />
               Language
             </label>
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
+              className="w-full rounded-md border border-border/20 bg-muted/30 px-2 py-1.5 text-xs text-foreground transition-all duration-200 focus:border-amber-400/40 focus:outline-none focus:ring-1 focus:ring-amber-400/40"
             >
               {languages.map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -76,14 +76,14 @@ export default function SpeechSettings({
             </select>
           </div>
           <div>
-            <label className="mb-1 flex items-center gap-1 text-xs font-semibold">
-              <Volume2 className="h-3 w-3" />
+            <label className="mb-1 flex items-center gap-1 text-xs font-medium text-foreground">
+              <Volume2 className="h-3 w-3 text-amber-400" />
               Voice
             </label>
             <select
               value={selectedVoice}
               onChange={(e) => setSelectedVoice(e.target.value)}
-              className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
+              className="w-full rounded-md border border-border/20 bg-muted/30 px-2 py-1.5 text-xs text-foreground transition-all duration-200 focus:border-amber-400/40 focus:outline-none focus:ring-1 focus:ring-amber-400/40"
             >
               {/* User's uploaded voices */}
               {userUploadedVoices.map((voice) => (
@@ -100,15 +100,15 @@ export default function SpeechSettings({
             </select>
           </div>
           <div>
-            <label className="mb-1 flex items-center gap-1 text-xs font-semibold">
-              <Upload className="h-3 w-3" />
+            <label className="mb-1 flex items-center gap-1 text-xs font-medium text-foreground">
+              <Upload className="h-3 w-3 text-emerald-400" />
               Upload Your Voice
             </label>
             <div className="space-y-2">
               {isUploadingVoice ? (
                 <div className="flex items-center justify-center py-4">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-muted-foreground ml-2 text-xs">
+                  <Loader2 className="h-4 w-4 animate-spin text-amber-400" />
+                  <span className="ml-2 text-xs text-muted-foreground">
                     Uploading...
                   </span>
                 </div>
@@ -117,19 +117,19 @@ export default function SpeechSettings({
                   type="file"
                   accept="audio/*"
                   onChange={handleVoiceUpload}
-                  className="w-full cursor-pointer text-xs file:mr-2 file:rounded-md file:border-0 file:bg-blue-50 file:px-2 file:py-1 file:text-xs file:text-blue-700 file:hover:bg-blue-100"
+                  className="w-full cursor-pointer text-xs text-muted-foreground file:mr-2 file:rounded-md file:border-0 file:bg-amber-400/10 file:px-2 file:py-1 file:text-xs file:text-amber-400 file:transition-colors file:hover:bg-amber-400/20"
                 />
               )}
-              <p className="text-muted-foreground text-xs">
+              <p className="text-xs text-muted-foreground">
                 Upload a clear voice sample (WAV/MP3). Uploaded voices appear in
                 the dropdown above.
               </p>
             </div>
           </div>
           <div>
-            <label className="mb-1 flex items-center justify-between text-xs font-semibold">
+            <label className="mb-1 flex items-center justify-between text-xs font-medium text-foreground">
               <span className="flex items-center gap-1">
-                <Settings className="h-3 w-3" />
+                <Settings className="h-3 w-3 text-amber-400" />
                 Emotion/Intensity
               </span>
               <span className="text-muted-foreground">
@@ -143,17 +143,17 @@ export default function SpeechSettings({
               step="0.1"
               value={exaggeration}
               onChange={(e) => setExaggeration(parseFloat(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-amber-400"
             />
-            <div className="mt-1 flex justify-between text-xs text-gray-500">
+            <div className="mt-1 flex justify-between text-xs text-muted-foreground">
               <span>Calm</span>
               <span>Expressive</span>
             </div>
           </div>
           <div>
-            <label className="mb-1 flex items-center justify-between text-xs font-semibold">
+            <label className="mb-1 flex items-center justify-between text-xs font-medium text-foreground">
               <span className="flex items-center gap-1">
-                <Settings className="h-3 w-3" />
+                <Settings className="h-3 w-3 text-amber-400" />
                 Pacing Control
               </span>
               <span className="text-muted-foreground">
@@ -167,19 +167,19 @@ export default function SpeechSettings({
               step="0.1"
               value={cfgWeight}
               onChange={(e) => setCfgWeight(parseFloat(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-amber-400"
             />
-            <div className="mt-1 flex justify-between text-xs text-gray-500">
+            <div className="mt-1 flex justify-between text-xs text-muted-foreground">
               <span>Fast</span>
               <span>Accurate</span>
             </div>
           </div>
           <div className="space-y-2">
             {text.trim() && (
-              <div className="rounded-md bg-blue-50 px-3 py-2 text-center">
-                <p className="text-xs text-blue-700">
+              <div className="rounded-md border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-center">
+                <p className="text-xs text-amber-300">
                   Cost:{" "}
-                  <span className="font-bold">
+                  <span className="font-semibold">
                     {creditsNeeded} credit
                     {creditsNeeded > 1 ? "s" : ""}
                   </span>{" "}
@@ -190,7 +190,7 @@ export default function SpeechSettings({
             <Button
               onClick={onGenerate}
               disabled={isGenerating || !text.trim()}
-              className="h-9 w-full gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              className="h-9 w-full gap-2 gradient-shift text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
             >
               {isGenerating ? (
                 <>

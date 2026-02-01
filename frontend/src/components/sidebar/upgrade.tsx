@@ -18,17 +18,17 @@ export default function Upgrade() {
     <Button
       variant="outline"
       size="sm"
-      className="group relative ml-2 overflow-hidden border-orange-400/50 bg-gradient-to-r from-orange-400/10 to-pink-500/10 text-orange-400 transition-all duration-300 hover:border-orange-500/70 hover:bg-gradient-to-r hover:from-orange-500 hover:to-pink-600 hover:text-white hover:shadow-lg hover:shadow-orange-500/25"
+      className="group relative ml-2 h-8 overflow-hidden border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 to-emerald-500/5 text-cyan-400 transition-all duration-300 hover:border-cyan-400 hover:gradient-shift hover:text-white"
       onClick={upgrade}
     >
-      <div className="flex items-center gap-2">
-        <Crown className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
-        <span className="font-medium">Upgrade</span>
-        <Sparkles className="h-3 w-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="flex items-center gap-1.5">
+        <Crown className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-12" />
+        <span className="text-xs font-medium">Upgrade</span>
+        <Sparkles className="h-2.5 w-2.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
 
       {/* Subtle glow effect */}
-      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-orange-400/20 to-pink-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-cyan-400/20 to-emerald-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </Button>
   );
 }

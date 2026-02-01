@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { Play, Pause, Sparkles } from "lucide-react";
+import { Play, Pause, Sparkles, Mic, Globe2 } from "lucide-react";
 import Link from "next/link";
+
 export default function DemoSection() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const naturalSpeechSamples = [
@@ -94,68 +95,74 @@ export default function DemoSection() {
       };
     }
   };
+
   return (
-    <section className="bg-gradient-to-br from-indigo-50/50 to-cyan-50/30 py-20 sm:py-32">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
-            Experience the{" "}
-            <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-              Difference
-            </span>
+    <section id="demo" className="relative z-10 py-16 bg-background">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="max-w-xl mb-10">
+          <span className="text-[10px] font-mono text-cyan-400/80 mb-2 block tracking-wider">SAMPLES</span>
+          <h2 className="text-3xl font-bold tracking-tight mb-3 text-white">
+            Hear the quality
           </h2>
-          <p className="mt-4 text-lg text-slate-600">
-            Listen to real examples of our AI voice technology in action
+          <p className="text-slate-300/90">
+            Real samples from our synthesis engine—no post-processing, no filters.
           </p>
         </div>
-        <div className="mb-16">
-          <h3 className="mb-6 text-center text-2xl font-semibold text-slate-800">
-            Natural & Expressive Speech
-          </h3>
-          <Card className="overflow-hidden border-slate-200">
+
+        {/* Natural Speech Samples */}
+        <ScrollReveal delay={100} className="mb-10">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-6 h-6 flex items-center justify-center bg-rose-500/8 text-rose-400">
+              <Mic className="h-3.5 w-3.5" />
+            </div>
+            <h3 className="text-sm font-medium text-foreground/90">Expressive Voice Samples</h3>
+          </div>
+          <Card className="overflow-hidden border-border/20 bg-card/30">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-slate-50">
+                <thead className="border-b border-border/20 bg-muted/5">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                      Text Sample
+                    <th className="px-4 py-2.5 text-left text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                      Text
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                      Voice Type
+                    <th className="px-4 py-2.5 text-left text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                      Voice
                     </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">
-                      Audio Output
+                    <th className="px-4 py-2.5 text-center text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                      Play
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {naturalSpeechSamples.map((sample) => (
-                    <tr key={sample.id} className="hover:bg-slate-50/50">
-                      <td className="px-6 py-4 text-sm text-slate-600">
+                <tbody className="divide-y divide-border/10">
+                  {naturalSpeechSamples.map((sample, index) => (
+                    <ScrollRevealRow key={sample.id} delay={index * 80}>
+                      <td className="px-4 py-3 text-xs text-muted-foreground max-w-xs">
                         &ldquo;{sample.text}&rdquo;
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-slate-700">
+                      <td className="px-4 py-3 text-xs font-medium whitespace-nowrap">
                         {sample.voiceType}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3">
                         <div className="flex justify-center">
                           <Button
                             variant="outline"
                             size="sm"
-                            className="gap-2 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700"
+                            className={`cursor-pointer gap-1.5 border-border/20 h-7 px-2.5 text-xs ${
+                              playingId === sample.id 
+                                ? 'bg-cyan-500 text-white border-transparent' 
+                                : 'hover:border-cyan-500/50 hover:text-cyan-400'
+                            }`}
                             onClick={() =>
                               handlePlay(sample.id, sample.audioUrl)
                             }
                           >
                             {playingId === sample.id ? (
                               <>
-                                <Pause className="h-4 w-4" />
-                                Pause
+                                <Pause className="h-3 w-3" />
                               </>
                             ) : (
                               <>
-                                <Play className="h-4 w-4" />
-                                Play
+                                <Play className="h-3 w-3" />
                               </>
                             )}
                           </Button>
@@ -168,62 +175,68 @@ export default function DemoSection() {
                           )}
                         </div>
                       </td>
-                    </tr>
+                    </ScrollRevealRow>
                   ))}
                 </tbody>
               </table>
             </div>
           </Card>
-        </div>
+        </ScrollReveal>
+
         {/* Multilingual Support Demo */}
-        <div>
-          <h3 className="mb-6 text-center text-2xl font-semibold text-slate-800">
-            Multilingual Support
-          </h3>
-          <Card className="overflow-hidden border-slate-200">
+        <ScrollReveal delay={200}>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-6 h-6 flex items-center justify-center bg-amber-500/8 text-amber-400">
+              <Globe2 className="h-3.5 w-3.5" />
+            </div>
+            <h3 className="text-sm font-medium text-foreground/90">24 Languages Supported</h3>
+          </div>
+          <Card className="overflow-hidden border-border/20 bg-card/30">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-slate-50">
+                <thead className="border-b border-border/20 bg-muted/5">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
                       Language
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                      Text Sample
+                    <th className="px-4 py-2.5 text-left text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                      Text
                     </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">
-                      Audio Output
+                    <th className="px-4 py-2.5 text-center text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                      Play
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {multilingualSamples.map((sample) => (
-                    <tr key={sample.id} className="hover:bg-slate-50/50">
-                      <td className="px-6 py-4 text-sm font-medium text-slate-700">
+                <tbody className="divide-y divide-border/10">
+                  {multilingualSamples.map((sample, index) => (
+                    <ScrollRevealRow key={sample.id} delay={index * 80}>
+                      <td className="px-4 py-3 text-xs font-medium whitespace-nowrap">
                         {sample.language}
                       </td>
-                      <td className="px-6 py-4 text-sm text-slate-600">
+                      <td className="px-4 py-3 text-xs text-muted-foreground">
                         &ldquo;{sample.text}&rdquo;
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3">
                         <div className="flex justify-center">
                           <Button
                             variant="outline"
                             size="sm"
-                            className="gap-2 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700"
+                            className={`cursor-pointer gap-1.5 border-border/20 h-7 px-2.5 text-xs ${
+                              playingId === sample.id 
+                                ? 'bg-cyan-500 text-white border-transparent' 
+                                : 'hover:border-cyan-500/50 hover:text-cyan-400'
+                            }`}
                             onClick={() =>
                               handlePlay(sample.id, sample.audioUrl)
                             }
                           >
                             {playingId === sample.id ? (
                               <>
-                                <Pause className="h-4 w-4" />
-                                Pause
+                                <Pause className="h-3 w-3" />
                               </>
                             ) : (
                               <>
-                                <Play className="h-4 w-4" />
-                                Play
+                                <Play className="h-3 w-3" />
                               </>
                             )}
                           </Button>
@@ -237,28 +250,122 @@ export default function DemoSection() {
                           )}
                         </div>
                       </td>
-                    </tr>
+                    </ScrollRevealRow>
                   ))}
                 </tbody>
               </table>
             </div>
           </Card>
-        </div>
-        <div className="mt-12 text-center">
-          <p className="mb-6 text-slate-600">
-            Ready to create your own AI-generated voices?
-          </p>
+        </ScrollReveal>
+
+        {/* CTA */}
+        <ScrollReveal delay={300} className="mt-10 text-center">
           <Link href="/dashboard">
-            <Button
-              size="lg"
-              className="cursor-pointer gap-2 bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-            >
-              <Sparkles className="h-5 w-5" />
-              Try It Free Now
+            <Button className="cursor-pointer h-10 px-5 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-white font-medium">
+              <Sparkles className="mr-2 h-4 w-4" />
+              Start Creating Free
             </Button>
           </Link>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
+  );
+}
+
+// Scroll reveal component for sections
+function ScrollReveal({ 
+  children, 
+  className = "", 
+  delay = 0 
+}: { 
+  children: React.ReactNode; 
+  className?: string; 
+  delay?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translateY(0)" : "translateY(40px)",
+        transition: `all 700ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// Scroll reveal for table rows
+function ScrollRevealRow({ 
+  children, 
+  delay = 0 
+}: { 
+  children: React.ReactNode; 
+  delay?: number;
+}) {
+  const ref = useRef<HTMLTableRowElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -20px 0px",
+      }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <tr
+      ref={ref}
+      className="transition-colors duration-200 hover:bg-muted/10"
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translateX(0)" : "translateX(-30px)",
+        transition: `all 500ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+      }}
+    >
+      {children}
+    </tr>
   );
 }

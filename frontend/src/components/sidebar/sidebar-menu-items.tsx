@@ -56,26 +56,28 @@ export default function SidebarMenuItems() {
             asChild
             isActive={item.active}
             className={cn(
-              "group hover:bg-primary/10 hover:text-primary relative h-10 w-full justify-start rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
-              item.active && "bg-primary/15 text-primary shadow-sm",
+              "group relative h-9 w-full justify-start rounded-sm px-3 py-2 text-sm font-medium transition-all duration-200",
+              item.active 
+                ? "bg-cyan-500/10 text-cyan-400" 
+                : "text-muted-foreground hover:bg-accent hover:text-foreground",
             )}
           >
             <Link
               href={item.url}
               onClick={handleMenuClick}
-              className="flex cursor-pointer items-center gap-3"
+              className="flex cursor-pointer items-center gap-2.5"
             >
               <item.icon
                 className={cn(
-                  "h-5 w-5 transition-colors duration-200",
+                  "h-4 w-4 transition-colors duration-200",
                   item.active
-                    ? "text-primary"
-                    : "text-muted-foreground group-hover:text-primary",
+                    ? "text-cyan-400"
+                    : "text-muted-foreground group-hover:text-foreground",
                 )}
               />
               <span className="truncate">{item.title}</span>
               {item.active && (
-                <div className="bg-primary absolute top-1/2 left-0 h-6 w-1 -translate-y-1/2 rounded-r-full" />
+                <div className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-gradient-to-b from-cyan-400 to-emerald-500" />
               )}
             </Link>
           </SidebarMenuButton>

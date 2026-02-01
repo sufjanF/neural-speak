@@ -30,12 +30,12 @@ export default function RootLayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="flex h-screen flex-col">
-          <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border/40 sticky top-0 z-10 border-b px-6 py-3 shadow-sm backdrop-blur">
+          <header className="sticky top-0 z-10 border-b border-border/50 bg-background/80 px-6 py-3 backdrop-blur-xl">
             <div className="flex shrink-0 grow items-center gap-3">
-              <SidebarTrigger className="hover:bg-muted -ml-1 h-8 w-8 transition-colors" />
+              <SidebarTrigger className="-ml-1 h-8 w-8 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground" />
               <Separator
                 orientation="vertical"
-                className="mr-2 h-6 data-[orientation=vertical]:h-6"
+                className="mr-2 h-6 bg-border/50 data-[orientation=vertical]:h-6"
               />
               <Breadcrumb>
                 <BreadcrumbList>
@@ -46,7 +46,7 @@ export default function RootLayout({
               </Breadcrumb>
             </div>
           </header>
-          <main className="from-background to-muted/20 flex-1 overflow-y-auto bg-gradient-to-br p-6">
+          <main className="flex-1 overflow-y-auto bg-background p-6">
             {children}
           </main>
         </SidebarInset>
