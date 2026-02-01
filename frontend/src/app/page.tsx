@@ -31,9 +31,9 @@ import { useEffect, useState, useRef, type ReactNode } from "react";
 
 /** Hero section statistics */
 const HERO_METRICS = [
-  { value: "24", label: "languages" },
-  { value: "99.7%", label: "accuracy" },
-  { value: "50+", label: "voices" },
+  { value: "24+", label: "languages supported" },
+  { value: "10", label: "free credits" },
+  { value: "50+", label: "voice styles" },
 ] as const;
 
 /** Feature cards for capabilities section */
@@ -613,101 +613,47 @@ export default function HomePage() {
       </section>
 
       {/* ========== WORKFLOW SECTION ========== */}
-      <section className="relative py-24 border-t border-border/10 overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-rose-500/5 rounded-full blur-3xl" />
-        </div>
-        
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
+      <section className="relative py-20 border-t border-border/10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           {/* Section header */}
-          <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center gap-2 text-[10px] font-mono text-amber-400/80 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-full mb-4">
-              <Zap className="w-3 h-3" />
-              HOW IT WORKS
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-foreground">
-              Three steps to
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-400">
-                studio-quality audio
-              </span>
+          <ScrollReveal className="text-center max-w-xl mx-auto mb-12">
+            <span className="text-[10px] font-mono text-amber-400/80 mb-2 block tracking-wider">HOW IT WORKS</span>
+            <h2 className="text-3xl font-bold tracking-tight mb-3 text-foreground">
+              Three steps to studio-quality audio
             </h2>
-            <p className="text-muted-foreground/80 text-lg">
+            <p className="text-muted-foreground/80">
               No expertise required. From text to broadcast-ready audio in seconds.
             </p>
           </ScrollReveal>
           
-          {/* Workflow steps - horizontal timeline */}
-          <div className="relative">
-            {/* Connecting line (desktop) */}
-            <div className="hidden lg:block absolute top-24 left-[16.67%] right-[16.67%] h-px">
-              <div className="w-full h-full bg-gradient-to-r from-rose-500/30 via-amber-500/30 to-emerald-500/30" />
-              {/* Animated pulse along the line */}
-              <div className="absolute top-0 left-0 w-20 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent animate-[slideRight_3s_ease-in-out_infinite]" />
-            </div>
-            
-            <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-              {WORKFLOW_STEPS.map((step, i) => (
-                <ScrollReveal key={i} delay={i * 200} direction="up">
-                  <div className="relative group">
-                    {/* Step card */}
-                    <div className="relative bg-slate-900/50 border border-border/20 rounded-xl p-8 transition-all duration-500 hover:border-border/40 hover:bg-slate-900/70 hover:shadow-2xl hover:shadow-amber-500/5 hover:-translate-y-2">
-                      {/* Step number badge */}
-                      <div className={`absolute -top-4 left-8 inline-flex items-center justify-center w-8 h-8 rounded-lg font-mono font-bold text-sm shadow-lg ${
-                        i === 0 ? 'bg-gradient-to-br from-rose-500 to-rose-600 text-white shadow-rose-500/25' :
-                        i === 1 ? 'bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-amber-500/25' :
-                        'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-emerald-500/25'
-                      }`}>
-                        {step.num}
-                      </div>
-                      
-                      {/* Icon */}
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 mt-2 transition-transform duration-300 group-hover:scale-110 ${
-                        i === 0 ? 'bg-rose-500/10' :
-                        i === 1 ? 'bg-amber-500/10' :
-                        'bg-emerald-500/10'
-                      }`}>
-                        {i === 0 ? <Type className={`w-7 h-7 text-rose-400`} /> :
-                         i === 1 ? <Settings className={`w-7 h-7 text-amber-400`} /> :
-                         <Download className={`w-7 h-7 text-emerald-400`} />}
-                      </div>
-                      
-                      {/* Content */}
-                      <h3 className="text-xl font-semibold mb-3 text-foreground">{step.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{step.desc}</p>
-                      
-                      {/* Decorative corner accent */}
-                      <div className={`absolute bottom-0 right-0 w-24 h-24 opacity-5 ${
-                        i === 0 ? 'bg-rose-500' :
-                        i === 1 ? 'bg-amber-500' :
-                        'bg-emerald-500'
-                      } blur-2xl rounded-full translate-x-1/2 translate-y-1/2`} />
+          {/* Workflow steps grid */}
+          <div className="grid md:grid-cols-3 gap-6">
+            {WORKFLOW_STEPS.map((step, i) => (
+              <ScrollReveal key={i} delay={i * 100} direction="up">
+                <div className="group h-full bg-slate-900/40 border border-border/20 rounded-lg p-6 transition-all duration-300 hover:bg-slate-900/60 hover:border-border/30">
+                  {/* Step number + Icon row */}
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className={`text-3xl font-bold font-mono ${step.color}`}>
+                      {step.num}
+                    </span>
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                      i === 0 ? 'bg-rose-500/10' :
+                      i === 1 ? 'bg-amber-500/10' :
+                      'bg-emerald-500/10'
+                    }`}>
+                      {i === 0 ? <Type className="w-5 h-5 text-rose-400" /> :
+                       i === 1 ? <Settings className="w-5 h-5 text-amber-400" /> :
+                       <Download className="w-5 h-5 text-emerald-400" />}
                     </div>
-                    
-                    {/* Arrow connector (mobile) */}
-                    {i < 2 && (
-                      <div className="lg:hidden flex justify-center py-4">
-                        <ArrowRight className="w-5 h-5 text-muted-foreground/30 rotate-90" />
-                      </div>
-                    )}
                   </div>
-                </ScrollReveal>
-              ))}
-            </div>
+                  
+                  {/* Content */}
+                  <h3 className="font-semibold mb-2 text-foreground">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+                </div>
+              </ScrollReveal>
+            ))}
           </div>
-          
-          {/* Bottom CTA */}
-          <ScrollReveal delay={600} direction="up">
-            <div className="mt-16 text-center">
-              <Link href="/dashboard">
-                <Button className="cursor-pointer h-12 px-8 bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-white font-semibold transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/25 hover:scale-105">
-                  Try It Now — It&apos;s Free
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </ScrollReveal>
         </div>
       </section>
 
