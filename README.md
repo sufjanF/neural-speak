@@ -15,30 +15,26 @@ Production-ready, full-stack text-to-speech SaaS. Next.js 16 frontend, Python ba
 
 ## Screenshots
 
-<p align="center">
-  <img src=".github/screenshots/dashboard.png" alt="Dashboard" width="800" />
-</p>
-<p align="center"><em>Dashboard — account overview and recent activity</em></p>
-
-<p align="center">
-  <img src=".github/screenshots/create.png" alt="Create" width="800" />
-</p>
-<p align="center"><em>Create — generate speech with custom settings</em></p>
-
-<p align="center">
-  <img src=".github/screenshots/projects.png" alt="Projects" width="800" />
-</p>
-<p align="center"><em>Projects — manage generated audio</em></p>
-
-<p align="center">
-  <img src=".github/screenshots/home_page.png" alt="Home" width="800" />
-</p>
-<p align="center"><em>Home — product overview and primary CTA</em></p>
-
-<p align="center">
-  <img src=".github/screenshots/login.png" alt="Login" width="800" />
-</p>
-<p align="center"><em>Login — secure authentication</em></p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src=".github/screenshots/dashboard.png" alt="Dashboard" width="220" /><br />
+      <em>Dashboard</em>
+    </td>
+    <td align="center">
+      <img src=".github/screenshots/create.png" alt="Create" width="220" /><br />
+      <em>Create</em>
+    </td>
+    <td align="center">
+      <img src=".github/screenshots/projects.png" alt="Projects" width="220" /><br />
+      <em>Projects</em>
+    </td>
+    <td align="center">
+      <img src=".github/screenshots/login.png" alt="Login" width="220" /><br />
+      <em>Login</em>
+    </td>
+  </tr>
+</table>
 
 ## Tech Stack
 
