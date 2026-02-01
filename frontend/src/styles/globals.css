@@ -423,23 +423,23 @@
   }
   30% { 
     left: 30.7%; 
-    top: 50%;
+    top: 52%;
   }
   50% { 
     left: 52.7%; 
-    top: 50%;
+    top: 52%;
   }
   70% { 
     left: 74.7%; 
-    top: 50%;
+    top: 52%;
   }
   85% { 
     opacity: 1;
     transform: scale(1);
   }
   100% { 
-    left: 90%; 
-    top: 50%; 
+    left: 74.7%; 
+    top: 52%; 
     opacity: 0;
     transform: scale(0.8);
   }

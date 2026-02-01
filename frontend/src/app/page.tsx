@@ -513,7 +513,7 @@ export default function HomePage() {
                 <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_6s_ease-in-out_infinite] opacity-0" style={{ left: '8.7%', top: '52%', animationDelay: '4s' }} />
                 
                 {/* Voice waveform output - complex multi-layer voice visualization */}
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 flex items-center">
+                <div className="absolute right-[4%] top-1/2 -translate-y-1/2 flex items-center">
                   {/* Primary waveform - varied heights and widths for realistic voice */}
                   <div className="flex items-center gap-[2px]">
                     {[
@@ -567,7 +567,7 @@ export default function HomePage() {
                 {/* Labels - only visible on large screens */}
                 <span className="absolute left-[8%] bottom-[-24px] text-[10px] font-mono text-cyan-400/60 tracking-wider uppercase hidden lg:block">Text Input</span>
                 <span className="absolute left-[33%] bottom-[-24px] text-[10px] font-mono text-muted-foreground/50 tracking-wider uppercase hidden lg:block">Neural Layers</span>
-                <span className="absolute right-[-2%] top-[36%] text-[10px] font-mono text-emerald-400/60 tracking-wider uppercase hidden lg:block">Voice Output</span>
+                <span className="absolute right-[2%] top-[36%] text-[10px] font-mono text-emerald-400/60 tracking-wider uppercase hidden lg:block">Voice Output</span>
               </div>
             </div>
           </div>

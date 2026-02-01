@@ -15,22 +15,24 @@ Production-ready, full-stack text-to-speech SaaS. Next.js 16 frontend, Python ba
 
 ## Screenshots
 
-<table align="center">
+<table align="center" border="0" cellspacing="0" cellpadding="16" style="border: none;">
   <tr>
-    <td align="center">
-      <img src=".github/screenshots/dashboard.png" alt="Dashboard" width="220" /><br />
+    <td align="center" style="border: none;">
+      <img src=".github/screenshots/dashboard.png" alt="Dashboard" width="360" /><br />
       <em>Dashboard</em>
     </td>
-    <td align="center">
-      <img src=".github/screenshots/create.png" alt="Create" width="220" /><br />
+    <td align="center" style="border: none;">
+      <img src=".github/screenshots/create.png" alt="Create" width="360" /><br />
       <em>Create</em>
     </td>
-    <td align="center">
-      <img src=".github/screenshots/projects.png" alt="Projects" width="220" /><br />
+  </tr>
+  <tr>
+    <td align="center" style="border: none;">
+      <img src=".github/screenshots/projects.png" alt="Projects" width="360" /><br />
       <em>Projects</em>
     </td>
-    <td align="center">
-      <img src=".github/screenshots/login.png" alt="Login" width="220" /><br />
+    <td align="center" style="border: none;">
+      <img src=".github/screenshots/login.png" alt="Login" width="360" /><br />
       <em>Login</em>
     </td>
   </tr>
