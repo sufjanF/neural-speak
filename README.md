@@ -18,22 +18,27 @@ Production-ready, full-stack text-to-speech SaaS. Next.js 16 frontend, Python ba
 <p align="center">
   <img src=".github/screenshots/dashboard.png" alt="Dashboard" width="800" />
 </p>
-<p align="center"><em>Dashboard - Overview of your account and recent activity</em></p>
+<p align="center"><em>Dashboard — account overview and recent activity</em></p>
 
 <p align="center">
   <img src=".github/screenshots/create.png" alt="Create" width="800" />
 </p>
-<p align="center"><em>Create - Generate speech with customizable settings</em></p>
+<p align="center"><em>Create — generate speech with custom settings</em></p>
 
 <p align="center">
   <img src=".github/screenshots/projects.png" alt="Projects" width="800" />
 </p>
-<p align="center"><em>Projects - Manage your generated audio files</em></p>
+<p align="center"><em>Projects — manage generated audio</em></p>
 
 <p align="center">
-  <img src=".github/screenshots/settings.png" alt="Settings" width="800" />
+  <img src=".github/screenshots/home_page.png" alt="Home" width="800" />
 </p>
-<p align="center"><em>Settings - Configure your account preferences</em></p>
+<p align="center"><em>Home — product overview and primary CTA</em></p>
+
+<p align="center">
+  <img src=".github/screenshots/login.png" alt="Login" width="800" />
+</p>
+<p align="center"><em>Login — secure authentication</em></p>
 
 ## Tech Stack
 
