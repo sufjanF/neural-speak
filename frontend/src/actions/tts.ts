@@ -1,3 +1,9 @@
+/**
+ * TTS Server Actions
+ * ------------------
+ * Server-side actions for text-to-speech generation, project management, and audio retrieval.
+ */
+
 "use server";
 
 import { headers } from "next/headers";
@@ -22,12 +28,14 @@ interface GenerateSpeechResult {
   error?: string;
 }
 
-const S3_BUCKET_URL =
-  "https://neural-speak-sufjan.s3.us-east-2.amazonaws.com";
+/** S3 bucket base URL for audio file access */
+const S3_BUCKET_URL = "https://neural-speak-sufjan.s3.us-east-2.amazonaws.com";
 
-export async function generateSpeech(
-  data: GenerateSpeechData,
-): Promise<GenerateSpeechResult> {
+/**
+ * Generate speech from text using the Modal TTS backend.
+ * Deducts credits and saves the project to the database.
+ */
+export async function generateSpeech(data: GenerateSpeechData): Promise<GenerateSpeechResult> {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -36,10 +44,12 @@ export async function generateSpeech(
     if (!session?.user?.id) {
       return { success: false, error: "Unauthorized" };
     }
+
     if (!data.text || !data.voice_S3_key || !data.language) {
       return { success: false, error: "Missing required fields" };
     }
 
+    // Calculate credits needed (1 credit per 100 characters)
     const creditsNeeded = Math.max(1, Math.ceil(data.text.length / 100));
 
     const user = await db.user.findUnique({

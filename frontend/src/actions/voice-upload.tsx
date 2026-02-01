@@ -1,20 +1,20 @@
+/**
+ * Voice Upload Server Actions
+ * ---------------------------
+ * Server-side actions for uploading custom voice samples to S3.
+ */
+
 "use server";
 
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from "@aws-sdk/client-s3";
-
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
+import { cache } from "react";
 import { auth } from "~/lib/auth";
 import { headers } from "next/headers";
-
 import { env } from "~/env";
 import { db } from "~/server/db";
-import { cache } from "react";
 
+/** Configured S3 client for voice file storage */
 const s3Client = new S3Client({
   region: env.AWS_REGION ?? "us-east-2",
   credentials: {
@@ -31,9 +31,10 @@ interface UploadVoiceResult {
   error?: string;
 }
 
-export async function uploadVoice(
-  formData: FormData,
-): Promise<UploadVoiceResult> {
+/**
+ * Upload a voice sample file to S3 and save metadata to database.
+ */
+export async function uploadVoice(formData: FormData): Promise<UploadVoiceResult> {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -43,11 +44,7 @@ export async function uploadVoice(
       return { success: false, error: "Unauthorized" };
     }
 
-    if (
-      !env.AWS_ACCESS_KEY_ID ||
-      !env.AWS_SECRET_ACCESS_KEY ||
-      !env.AWS_S3_BUCKET_NAME
-    ) {
+    if (!env.AWS_ACCESS_KEY_ID || !env.AWS_SECRET_ACCESS_KEY || !env.AWS_S3_BUCKET_NAME) {
       return { success: false, error: "AWS S3 not configured" };
     }
 

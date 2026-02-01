@@ -1,3 +1,9 @@
+/**
+ * Create Page - Text-to-Speech Generator
+ * ---------------------------------------
+ * Main TTS creation interface with voice selection,
+ * language options, and audio generation controls.
+ */
 "use client";
 
 import { RedirectToSignIn, SignedIn } from "@daveyplate/better-auth-ui";
@@ -21,6 +27,11 @@ import SpeechSettings from "~/components/create/speech-settings";
 import TextInput from "~/components/create/text-input";
 import AudioHistory from '~/components/create/audio-history';
 
+/* ============================================================================
+   CONSTANTS
+   ============================================================================ */
+
+/** Supported languages for TTS generation */
 const LANGUAGES: Language[] = [
   { code: "en", name: "English", flag: "🇺🇸" },
   { code: "es", name: "Spanish", flag: "🇪🇸" },
@@ -45,32 +56,52 @@ const LANGUAGES: Language[] = [
   { code: "he", name: "Hebrew", flag: "🇮🇱" },
   { code: "ms", name: "Malay", flag: "🇲🇾" },
   { code: "sw", name: "Swahili", flag: "🇰🇪" },
-];
+] as const;
 
+/** Default voice samples available to all users */
 const VOICE_FILES: VoiceFile[] = [
   { name: "Michael", s3_key: "samples/voices/Michael.wav" },
-];
+] as const;
 
+/** Maximum audio history items to display */
+const MAX_AUDIO_HISTORY = 20;
+
+/** Maximum voice file size (10MB) */
+const MAX_VOICE_FILE_SIZE = 10 * 1024 * 1024;
+
+/* ============================================================================
+   MAIN COMPONENT
+   ============================================================================ */
+
+/**
+ * CreatePage - TTS generation interface
+ * Handles voice selection, text input, and audio generation.
+ */
 export default function CreatePage() {
   const router = useRouter();
+  
+  // Loading states
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploadingVoice, setIsUploadingVoice] = useState(false);
+  
+  // Form state
   const [text, setText] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [selectedVoice, setSelectedVoice] = useState(
     VOICE_FILES[0]?.s3_key ?? "samples/voices/Michael.wav",
   );
-
   const [exaggeration, setExaggeration] = useState(0.5);
   const [cfgWeight, setCfgWeight] = useState(0.5);
+  
+  // Audio state
   const [generatedAudios, setGeneratedAudios] = useState<GeneratedAudio[]>([]);
   const [currentAudio, setCurrentAudio] = useState<GeneratedAudio | null>(null);
-  const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
-    [],
-  );
+  const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>([]);
+  
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  /** Fetch user's uploaded voice samples */
   const fetchUserUploadedVoices = async () => {
     const result = await getUserUploadedVoices();
     if (result.success) {
@@ -78,6 +109,7 @@ export default function CreatePage() {
     }
   };
 
+  // Initialize data on mount
   useEffect(() => {
     const initializeData = async () => {
       try {
@@ -86,26 +118,25 @@ export default function CreatePage() {
           getUserAudioProjects(),
           getUserUploadedVoices(),
         ]);
+        
+        // Map existing projects to audio format
         if (projectsResult.success && projectsResult.audioProjects) {
-          const mappedProjects = projectsResult.audioProjects.map(
-            (project) => ({
-              s3_key: project.s3Key,
-              audioUrl: project.audioUrl,
-              text: project.text,
-              language: project.language,
-              timestamp: new Date(project.createdAt),
-            }),
-          );
+          const mappedProjects = projectsResult.audioProjects.map((project) => ({
+            s3_key: project.s3Key,
+            audioUrl: project.audioUrl,
+            text: project.text,
+            language: project.language,
+            timestamp: new Date(project.createdAt),
+          }));
           setGeneratedAudios(mappedProjects);
         }
 
         if (voicesResult.success) {
           setUserUploadedVoices(voicesResult.voices);
         }
-
-        setIsLoading(false);
       } catch (error) {
         console.error("Error initializing data:", error);
+      } finally {
         setIsLoading(false);
       }
     };
@@ -113,11 +144,15 @@ export default function CreatePage() {
     void initializeData();
   }, []);
 
+  /**
+   * Generate TTS audio from text input
+   */
   const generateSpeech = async () => {
     if (!text.trim()) {
       toast.error("Please enter some text!");
       return;
     }
+    
     setIsGenerating(true);
     try {
       const result = await generateSpeechAction({
@@ -143,8 +178,9 @@ export default function CreatePage() {
       };
 
       setCurrentAudio(newAudio);
-      setGeneratedAudios([newAudio, ...generatedAudios].slice(0, 20));
+      setGeneratedAudios([newAudio, ...generatedAudios].slice(0, MAX_AUDIO_HISTORY));
 
+      // Auto-play the generated audio
       setTimeout(() => {
         if (audioRef.current) {
           audioRef.current.load();
@@ -157,17 +193,18 @@ export default function CreatePage() {
       toast.success("Speech generated successfully!");
     } catch (error) {
       console.error("Generation error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to generate speech";
+      const errorMessage = error instanceof Error ? error.message : "Failed to generate speech";
       toast.error(errorMessage);
     } finally {
       setIsGenerating(false);
     }
   };
 
+  /**
+   * Play selected audio from history
+   */
   const playAudio = (audio: GeneratedAudio) => {
     setCurrentAudio(audio);
-    // Auto-play after setting the audio
     setTimeout(() => {
       if (audioRef.current) {
         audioRef.current.load();
@@ -176,25 +213,32 @@ export default function CreatePage() {
         });
       }
     }, 100);
-    toast.info(`Now playing...`);
+    toast.info("Now playing...");
   };
 
+  /**
+   * Download audio file
+   */
   const downloadAudio = (audio: GeneratedAudio) => {
     window.open(audio.audioUrl, "_blank");
     toast.success("Download started!");
   };
 
-  const handleVoiceUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  /**
+   * Handle voice file upload
+   */
+  const handleVoiceUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    
+    // Validate file type
     if (!file.type.startsWith("audio/")) {
       toast.error("Please select an audio file!");
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
+    // Validate file size
+    if (file.size > MAX_VOICE_FILE_SIZE) {
       toast.error("File size must be less than 10MB!");
       return;
     }
@@ -211,7 +255,6 @@ export default function CreatePage() {
       }
 
       toast.success("Voice uploaded successfully!");
-
       await fetchUserUploadedVoices();
     } catch (error) {
       console.error("Upload error:", error);
@@ -221,6 +264,7 @@ export default function CreatePage() {
     }
   };
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">

@@ -1,3 +1,9 @@
+/**
+ * Dashboard Home Page
+ * -------------------
+ * Main dashboard view displaying user stats, quick actions,
+ * and recent audio projects.
+ */
 "use client";
 
 import { RedirectToSignIn, SignedIn } from "@daveyplate/better-auth-ui";
@@ -19,6 +25,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "next/navigation";
 
+/* ============================================================================
+   TYPE DEFINITIONS
+   ============================================================================ */
+
+/** Audio project data structure */
 interface AudioProject {
   id: string;
   name: string | null;
@@ -34,12 +45,41 @@ interface AudioProject {
   updatedAt: Date;
 }
 
+/** Aggregated user statistics */
 interface UserStats {
   totalAudioProjects: number;
   thisMonth: number;
   thisWeek: number;
 }
 
+/* ============================================================================
+   HELPER FUNCTIONS
+   ============================================================================ */
+
+/**
+ * Calculate user statistics from audio projects
+ * @param audios - Array of audio projects
+ * @returns Computed statistics object
+ */
+function calculateStats(audios: AudioProject[]): UserStats {
+  const now = new Date();
+  const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  return {
+    totalAudioProjects: audios.length,
+    thisMonth: audios.filter((p) => new Date(p.createdAt) >= thisMonth).length,
+    thisWeek: audios.filter((p) => new Date(p.createdAt) >= thisWeek).length,
+  };
+}
+
+/* ============================================================================
+   MAIN COMPONENT
+   ============================================================================ */
+
+/**
+ * Dashboard - Main user dashboard with stats and recent projects
+ */
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [audioProjects, setAudioProjects] = useState<AudioProject[]>([]);
@@ -54,6 +94,7 @@ export default function Dashboard() {
   } | null>(null);
   const router = useRouter();
 
+  // Fetch user data and audio projects on mount
   useEffect(() => {
     const initializeDashboard = async () => {
       try {
@@ -71,18 +112,7 @@ export default function Dashboard() {
         }
 
         const audios = audioResult.audioProjects ?? [];
-
-        const now = new Date();
-        const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-        setUserStats({
-          totalAudioProjects: audios.length,
-          thisMonth: audios.filter((p) => new Date(p.createdAt) >= thisMonth)
-            .length,
-          thisWeek: audios.filter((p) => new Date(p.createdAt) >= thisWeek)
-            .length,
-        });
+        setUserStats(calculateStats(audios));
       } catch (error) {
         console.error("Dashboard initialization failed:", error);
       } finally {
@@ -93,11 +123,12 @@ export default function Dashboard() {
     void initializeDashboard();
   }, []);
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
+          <Loader2 className="h-8 w-8 animate-spin text-violet-400" />
           <p className="text-sm text-muted-foreground">
             Loading your dashboard...
           </p>
@@ -178,8 +209,8 @@ export default function Dashboard() {
                 <CardTitle className="text-xs font-medium text-muted-foreground">
                   Member Since
                 </CardTitle>
-                <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-cyan-500/10">
-                  <Star className="h-3.5 w-3.5 text-cyan-400" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-violet-500/10">
+                  <Star className="h-3.5 w-3.5 text-violet-400" />
                 </div>
               </CardHeader>
               <CardContent>
@@ -202,7 +233,7 @@ export default function Dashboard() {
           <Card className="border-border/20 bg-card/40 backdrop-blur-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <Sparkles className="h-4 w-4 text-cyan-400" />
+                <Sparkles className="h-4 w-4 text-violet-400" />
                 Quick Actions
               </CardTitle>
             </CardHeader>
@@ -264,7 +295,7 @@ export default function Dashboard() {
                   variant="ghost"
                   size="sm"
                   onClick={() => router.push("/dashboard/projects")}
-                  className="text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300"
+                  className="text-violet-400 hover:bg-violet-500/10 hover:text-violet-300"
                 >
                   View All <ArrowRight className="ml-1 h-3.5 w-3.5" />
                 </Button>
@@ -297,7 +328,7 @@ export default function Dashboard() {
                   {audioProjects.slice(0, 5).map((audio) => (
                     <div
                       key={audio.id}
-                      className="group flex items-center gap-3 rounded-sm border border-border/20 bg-muted/10 p-3 transition-all duration-200 hover:border-cyan-500/20 hover:bg-muted/20"
+                      className="group flex items-center gap-3 rounded-sm border border-border/20 bg-muted/10 p-3 transition-all duration-200 hover:border-violet-500/20 hover:bg-muted/20"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm gradient-shift">
                         <Music className="h-5 w-5 text-white" />

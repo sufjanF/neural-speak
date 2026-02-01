@@ -1,75 +1,112 @@
+/**
+ * Auth Layout
+ * -----------
+ * Split-screen authentication layout with branded left panel
+ * and auth form on the right.
+ */
 import type { ReactNode } from "react";
 import { Providers } from "~/components/providers";
-import { AudioWaveform, Mic, Zap, Target } from "lucide-react";
+import { Mic, Zap, Globe2, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { Logo } from "~/components/ui/logo";
+
+/** Feature highlights for the branded panel */
+const AUTH_FEATURES = [
+  {
+    icon: Mic,
+    title: "Voice Cloning",
+    desc: "Clone any voice with just 30 seconds of audio",
+    color: "from-rose-500/20 to-rose-500/5 border-rose-500/20 text-rose-400",
+  },
+  {
+    icon: Globe2,
+    title: "24 Languages",
+    desc: "Generate natural speech in multiple languages",
+    color: "from-amber-500/20 to-amber-500/5 border-amber-500/20 text-amber-400",
+  },
+  {
+    icon: Zap,
+    title: "Studio Quality",
+    desc: "Broadcast-ready audio with natural prosody",
+    color: "from-violet-500/20 to-violet-500/5 border-violet-500/20 text-violet-400",
+  },
+] as const;
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <Providers>
       <div className="auth-page flex min-h-screen">
-        {/* Left Side - Branding */}
-        <div className="relative hidden overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 lg:flex lg:w-1/2">
-          <div className="bg-grid-white/[0.02] absolute inset-0 bg-[size:30px_30px]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/50" />
+        {/* Left Panel - Branded Experience */}
+        <div className="relative hidden lg:flex lg:w-1/2 flex-col justify-between overflow-hidden bg-slate-950">
+          {/* Layered background effects */}
+          <div className="absolute inset-0">
+            {/* Base gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900" />
+            
+            {/* Animated gradient orbs */}
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute top-1/3 -right-32 w-80 h-80 bg-emerald-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="absolute -bottom-32 left-1/4 w-72 h-72 bg-rose-500/6 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+            
+            {/* Grid pattern overlay */}
+            <div 
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                                  linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+                backgroundSize: '60px 60px'
+              }}
+            />
+            
+            {/* Top fade */}
+            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-slate-950 to-transparent" />
+          </div>
           
-          {/* Animated background orbs */}
-          <div className="animate-float absolute right-20 top-20 h-32 w-32 rounded-full bg-rose-500/15 blur-3xl" />
-          <div className="animate-float-delayed absolute bottom-20 right-32 h-24 w-24 rounded-full bg-amber-500/12 blur-2xl" />
-          <div className="animate-float absolute right-10 top-1/2 h-16 w-16 rounded-full bg-emerald-500/10 blur-xl" />
-          
-          <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16">
+          {/* Content */}
+          <div className="relative z-10 flex flex-col h-full px-12 xl:px-16 py-12">
             {/* Logo */}
-            <Link
-              href="/"
-              className="mb-10 flex cursor-pointer items-center gap-2.5"
-            >
-              <div className="gradient-shift flex h-11 w-11 items-center justify-center rounded-xl shadow-lg shadow-cyan-500/20">
-                <AudioWaveform className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold text-white">
-                Neural Speak
-              </span>
+            <Link href="/" className="group inline-flex w-fit">
+              <Logo size="lg" showText textClass="text-2xl font-bold text-white" />
             </Link>
-
-            {/* Hero Content */}
-            <div className="max-w-md">
-              <h1 className="mb-5 text-4xl font-bold leading-tight text-white xl:text-5xl">
-                Your words,{" "}
-                <span className="text-gradient">any voice</span>
-              </h1>
-              <p className="mb-6 text-lg leading-relaxed text-slate-300">
-                Clone voices, synthesize speech in 24 languages, and deliver broadcast-quality audio.
-              </p>
-
-              {/* Feature List */}
-              <div className="space-y-3">
-                {[
-                  {
-                    icon: Mic,
-                    text: "Voice Cloning",
-                    color:
-                      "bg-rose-500/20 border-rose-500/30 text-rose-400",
-                  },
-                  {
-                    icon: Zap,
-                    text: "Instant Processing",
-                    color: "bg-amber-500/20 border-amber-500/30 text-amber-400",
-                  },
-                  {
-                    icon: Target,
-                    text: "Studio Quality",
-                    color: "bg-emerald-500/20 border-emerald-500/30 text-emerald-400",
-                  },
-                ].map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-sm border backdrop-blur-sm ${feature.color}`}
-                    >
-                      <feature.icon className="h-4 w-4" />
+            
+            {/* Main hero content - centered */}
+            <div className="flex-1 flex flex-col justify-center max-w-lg">
+              <div className="space-y-6">
+                {/* Tagline badge */}
+                <div className="inline-flex items-center gap-2 text-[11px] font-mono text-slate-400 bg-slate-800/50 border border-slate-700/50 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                  <Sparkles className="w-3 h-3 text-violet-400" />
+                  AI-POWERED VOICE SYNTHESIS
+                </div>
+                
+                {/* Hero heading */}
+                <h1 className="text-4xl xl:text-5xl font-bold leading-[1.15] text-white">
+                  Transform text into{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-violet-400">
+                    lifelike speech
+                  </span>
+                </h1>
+                
+                {/* Subtitle */}
+                <p className="text-lg text-slate-400 leading-relaxed">
+                  Professional voice cloning and text-to-speech synthesis. 
+                  Create broadcast-quality audio in seconds.
+                </p>
+              </div>
+              
+              {/* Feature cards */}
+              <div className="mt-10 space-y-3">
+                {AUTH_FEATURES.map((feature, i) => (
+                  <div 
+                    key={i}
+                    className={`group flex items-center gap-4 p-4 rounded-xl border bg-gradient-to-r ${feature.color} backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-900/50">
+                      <feature.icon className="h-5 w-5" />
                     </div>
-                    <span className="font-medium text-slate-200">
-                      {feature.text}
-                    </span>
+                    <div>
+                      <h3 className="font-semibold text-white text-sm">{feature.title}</h3>
+                      <p className="text-xs text-slate-400">{feature.desc}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -77,38 +114,35 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        {/* Right Side - Auth Form */}
-        <div className="flex flex-1 flex-col justify-center bg-background px-6 py-10 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            {/* Mobile Logo */}
-            <div className="mb-6 text-center lg:hidden">
-              <Link
-                href="/"
-                className="inline-flex cursor-pointer items-center gap-2"
-              >
-                <div className="gradient-shift flex h-10 w-10 items-center justify-center rounded-sm">
-                  <AudioWaveform className="h-5 w-5 text-white" />
-                </div>
-                <span className="text-xl font-bold text-foreground">
-                  Neural Speak
-                </span>
-              </Link>
-            </div>
-
-            {/* Auth Form Container */}
-            <div>{children}</div>
-
-            {/* Footer Link */}
-            <p className="mt-5 text-center text-sm text-muted-foreground">
-              Back to{" "}
-              <Link
-                href="/"
-                className="cursor-pointer font-medium text-cyan-500 transition-colors hover:text-cyan-400"
-              >
-                homepage
-              </Link>
-            </p>
+        {/* Right Panel - Auth Form */}
+        <div className="flex flex-1 flex-col bg-background">
+          {/* Mobile header */}
+          <div className="lg:hidden flex items-center justify-between px-6 py-4 border-b border-border/20">
+            <Link href="/" className="group">
+              <Logo size="md" showText textClass="text-lg font-semibold text-foreground" />
+            </Link>
           </div>
+          
+          {/* Form container - centered */}
+          <div className="flex-1 flex flex-col justify-center px-6 py-10 lg:px-8">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md">
+              {/* Auth form content */}
+              <div>{children}</div>
+
+              {/* Footer link */}
+              <p className="mt-8 text-center text-sm text-muted-foreground">
+                <Link
+                  href="/"
+                  className="font-medium text-violet-500 hover:text-violet-400 transition-colors"
+                >
+                  ← Back to homepage
+                </Link>
+              </p>
+            </div>
+          </div>
+          
+          {/* Bottom border accent */}
+          <div className="h-1 bg-gradient-to-r from-violet-500/50 via-fuchsia-500/50 to-violet-500/50" />
         </div>
       </div>
     </Providers>

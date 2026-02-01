@@ -1,3 +1,10 @@
+/**
+ * Demo Section Component
+ * ----------------------
+ * Showcases audio samples demonstrating TTS quality.
+ * Features natural speech and multilingual samples with
+ * scroll-triggered animations.
+ */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -6,57 +13,78 @@ import { Card } from "~/components/ui/card";
 import { Play, Pause, Sparkles, Mic, Globe2 } from "lucide-react";
 import Link from "next/link";
 
+/* ============================================================================
+   SAMPLE DATA
+   ============================================================================ */
+
+/** Natural speech voice samples */
+const NATURAL_SPEECH_SAMPLES = [
+  {
+    id: "friendly-female",
+    text: "Hi there! I'm excited to help you create amazing voice content today.",
+    voiceType: "Friendly Female",
+    audioUrl: "/audio/friendly-female.wav",
+  },
+  {
+    id: "news-anchor",
+    text: "Introducing the next generation of refreshment. Duff Beer just got bolder, smoother, and brewed to perfection.",
+    voiceType: "Stewie Voice Clone",
+    audioUrl: "/audio/duff_stewie.wav",
+  },
+  {
+    id: "conan-protest",
+    text: "So I want you to get up now. I want all of you to get up out of your chairs. I want you to go to the window, open it, and stick your head out and yell 'I'M MAD AS HELL!",
+    voiceType: "Conan Voice - Passionate Protest",
+    audioUrl: "/audio/network_conan.wav",
+  },
+] as const;
+
+/** Multilingual demo samples */
+const MULTILINGUAL_SAMPLES = [
+  {
+    id: "hindi",
+    language: "Indian 🇮🇳",
+    text: "नमस्कार! हमारे मंच पर आपका स्वागत है।",
+    audioUrl: "/audio/hindi.wav",
+  },
+  {
+    id: "spanish",
+    language: "Spanish 🇪🇸",
+    text: "¡Hola! Bienvenido a nuestra plataforma.",
+    audioUrl: "/audio/spanish.wav",
+  },
+  {
+    id: "french",
+    language: "French 🇫🇷",
+    text: "Bonjour! Bienvenue sur notre plateforme.",
+    audioUrl: "/audio/french.wav",
+  },
+  {
+    id: "japanese",
+    language: "Japanese 🇯🇵",
+    text: "こんにちは！私たちのプラットフォームへようこそ。",
+    audioUrl: "/audio/japanese.wav",
+  },
+] as const;
+
+/* ============================================================================
+   MAIN COMPONENT
+   ============================================================================ */
+
+/**
+ * DemoSection - Interactive audio sample showcase
+ * Displays voice samples in categorized tables with play controls.
+ */
 export default function DemoSection() {
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const naturalSpeechSamples = [
-    {
-      id: "friendly-female",
-      text: "Hi there! I'm excited to help you create amazing voice content today.",
-      voiceType: "Friendly Female",
-      audioUrl: "/audio/friendly-female.wav",
-    },
-    {
-      id: "news-anchor",
-      text: "Introducing the next generation of refreshment. Duff Beer just got bolder, smoother, and brewed to perfection.",
-      voiceType: "Stewie Voice Clone",
-      audioUrl: "/audio/duff_stewie.wav",
-    },
-    {
-      id: "conan-protest",
-      text: "So I want you to get up now. I want all of you to get up out of your chairs. I want you to go to the window, open it, and stick your head out and yell 'I'M MAD AS HELL!",
-      voiceType: "Conan Voice - Passionate Protest",
-      audioUrl: "/audio/network_conan.wav",
-    },
-  ];
 
-  const multilingualSamples = [
-    {
-      id: "hindi",
-      language: "Indian 🇮🇳",
-      text: "नमस्कार! हमारे मंच पर आपका स्वागत है।",
-      audioUrl: "/audio/hindi.wav",
-    },
-    {
-      id: "spanish",
-      language: "Spanish 🇪🇸",
-      text: "¡Hola! Bienvenido a nuestra plataforma.",
-      audioUrl: "/audio/spanish.wav",
-    },
-    {
-      id: "french",
-      language: "French 🇫🇷",
-      text: "Bonjour! Bienvenue sur notre plateforme.",
-      audioUrl: "/audio/french.wav",
-    },
-    {
-      id: "japanese",
-      language: "Japanese 🇯🇵",
-      text: "こんにちは！私たちのプラットフォームへようこそ。",
-      audioUrl: "/audio/japanese.wav",
-    },
-  ];
-
+  /**
+   * Handles audio playback toggle
+   * @param id - Sample identifier
+   * @param audioUrl - URL of the audio file
+   */
   const handlePlay = (id: string, audioUrl: string) => {
+    // Toggle off if already playing
     if (playingId === id) {
       const audio = document.getElementById(id) as HTMLAudioElement;
       audio?.pause();
@@ -64,35 +92,26 @@ export default function DemoSection() {
       return;
     }
 
+    // Stop currently playing audio
     if (playingId) {
-      const currentAudio = document.getElementById(
-        playingId,
-      ) as HTMLAudioElement;
+      const currentAudio = document.getElementById(playingId) as HTMLAudioElement;
       currentAudio?.pause();
       currentAudio.currentTime = 0;
     }
 
+    // Play selected audio
     const audio = document.getElementById(id) as HTMLAudioElement;
     if (audio) {
       audio
         .play()
-        .then(() => {
-          setPlayingId(id);
-        })
+        .then(() => setPlayingId(id))
         .catch((error) => {
           console.error("Audio playback failed:", error);
-          alert(
-            "Unable to play audio. Please check the audio file or try generating your own speech in the dashboard!",
-          );
+          alert("Unable to play audio. Please try generating your own speech in the dashboard!");
         });
 
-      audio.onended = () => {
-        setPlayingId(null);
-      };
-
-      audio.onerror = () => {
-        setPlayingId(null);
-      };
+      audio.onended = () => setPlayingId(null);
+      audio.onerror = () => setPlayingId(null);
     }
   };
 
@@ -134,7 +153,7 @@ export default function DemoSection() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/10">
-                  {naturalSpeechSamples.map((sample, index) => (
+                  {NATURAL_SPEECH_SAMPLES.map((sample, index) => (
                     <ScrollRevealRow key={sample.id} delay={index * 80}>
                       <td className="px-4 py-3 text-xs text-muted-foreground max-w-xs">
                         &ldquo;{sample.text}&rdquo;
@@ -208,7 +227,7 @@ export default function DemoSection() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/10">
-                  {multilingualSamples.map((sample, index) => (
+                  {MULTILINGUAL_SAMPLES.map((sample, index) => (
                     <ScrollRevealRow key={sample.id} delay={index * 80}>
                       <td className="px-4 py-3 text-xs font-medium whitespace-nowrap">
                         {sample.language}
@@ -272,7 +291,16 @@ export default function DemoSection() {
   );
 }
 
-// Scroll reveal component for sections
+/* ============================================================================
+   ANIMATION COMPONENTS
+   ============================================================================ */
+
+/**
+ * ScrollReveal - Animates children when scrolled into view
+ * @param children - Content to animate
+ * @param className - Additional CSS classes
+ * @param delay - Animation delay in ms
+ */
 function ScrollReveal({ 
   children, 
   className = "", 
@@ -297,10 +325,7 @@ function ScrollReveal({
           setIsVisible(false);
         }
       },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px",
-      }
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     );
 
     observer.observe(element);
@@ -322,7 +347,11 @@ function ScrollReveal({
   );
 }
 
-// Scroll reveal for table rows
+/**
+ * ScrollRevealRow - Animates table rows with horizontal slide
+ * @param children - Row content
+ * @param delay - Animation delay in ms
+ */
 function ScrollRevealRow({ 
   children, 
   delay = 0 
@@ -345,10 +374,7 @@ function ScrollRevealRow({
           setIsVisible(false);
         }
       },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -20px 0px",
-      }
+      { threshold: 0.1, rootMargin: "0px 0px -20px 0px" }
     );
 
     observer.observe(element);

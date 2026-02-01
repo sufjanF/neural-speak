@@ -3,8 +3,8 @@ import { z } from "zod";
 
 export const env = createEnv({
   /**
-   * Specify your server-side environment variables schema here. This way you can ensure the app
-   * isn't built with invalid env vars.w
+   * Specify your server-side environment variables schema here.
+   * This ensures the app isn't built with invalid env vars.
    */
   server: {
     DATABASE_URL: z.url(),

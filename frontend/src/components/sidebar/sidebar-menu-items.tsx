@@ -58,7 +58,7 @@ export default function SidebarMenuItems() {
             className={cn(
               "group relative h-9 w-full justify-start rounded-sm px-3 py-2 text-sm font-medium transition-all duration-200",
               item.active 
-                ? "bg-cyan-500/10 text-cyan-400" 
+                ? "bg-violet-500/10 text-violet-400" 
                 : "text-muted-foreground hover:bg-accent hover:text-foreground",
             )}
           >
@@ -71,13 +71,13 @@ export default function SidebarMenuItems() {
                 className={cn(
                   "h-4 w-4 transition-colors duration-200",
                   item.active
-                    ? "text-cyan-400"
+                    ? "text-violet-400"
                     : "text-muted-foreground group-hover:text-foreground",
                 )}
               />
               <span className="truncate">{item.title}</span>
               {item.active && (
-                <div className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-gradient-to-b from-cyan-400 to-emerald-500" />
+                <div className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-gradient-to-b from-violet-400 to-fuchsia-500" />
               )}
             </Link>
           </SidebarMenuButton>

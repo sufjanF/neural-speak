@@ -1,3 +1,9 @@
+/**
+ * Neural Speak Landing Page
+ * -------------------------
+ * Main marketing page showcasing TTS capabilities with
+ * animated neural network visualization and scroll-based reveals.
+ */
 "use client";
 
 import { Button } from "~/components/ui/button";
@@ -10,13 +16,94 @@ import {
   Activity,
   CheckCircle2,
   Play,
-  AudioWaveform,
+  Type,
+  Settings,
+  Download,
 } from "lucide-react";
 import Link from "next/link";
 import DemoSection from "~/components/demo-section";
+import { Logo } from "~/components/ui/logo";
 import { useEffect, useState, useRef, type ReactNode } from "react";
 
-// Scroll animation hook
+/* ============================================================================
+   CONSTANTS & CONFIGURATION
+   ============================================================================ */
+
+/** Hero section statistics */
+const HERO_METRICS = [
+  { value: "24", label: "languages" },
+  { value: "99.7%", label: "accuracy" },
+  { value: "50+", label: "voices" },
+] as const;
+
+/** Feature cards for capabilities section */
+const FEATURES = [
+  {
+    icon: <Mic className="h-4 w-4" />,
+    title: "Voice Cloning",
+    desc: "30-second sample creates a digital voice replica.",
+    color: "rose" as const,
+  },
+  {
+    icon: <Activity className="h-4 w-4" />,
+    title: "Emotional Range",
+    desc: "Control intensity, pacing, and expression.",
+    color: "amber" as const,
+  },
+  {
+    icon: <Globe2 className="h-4 w-4" />,
+    title: "24 Languages",
+    desc: "English, Spanish, Japanese, Arabic, and more.",
+    color: "cyan" as const,
+  },
+  {
+    icon: <Zap className="h-4 w-4" />,
+    title: "Studio Quality",
+    desc: "48kHz broadcast-ready WAV files every time.",
+    color: "emerald" as const,
+  },
+] as const;
+
+/** Workflow steps for "How it works" section */
+const WORKFLOW_STEPS = [
+  {
+    num: "01",
+    title: "Write your script",
+    desc: "Paste text up to 5,000 characters. We handle punctuation, abbreviations, and formatting.",
+    color: "text-rose-500/30 group-hover:text-rose-500/50",
+  },
+  {
+    num: "02",
+    title: "Select a voice",
+    desc: "Choose from our library or upload a 30-second sample to clone your own.",
+    color: "text-amber-500/30 group-hover:text-amber-500/50",
+  },
+  {
+    num: "03",
+    title: "Download & use",
+    desc: "Export high-fidelity WAV files. Commercial-ready. No restrictions.",
+    color: "text-cyan-500/30 group-hover:text-cyan-500/50",
+  },
+] as const;
+
+/** Pricing features list */
+const PRICING_FEATURES = [
+  "Unlimited voice cloning",
+  "All 24 languages",
+  "High-fidelity WAV exports",
+  "Commercial usage rights",
+  "Priority GPU processing",
+] as const;
+
+/* ============================================================================
+   ANIMATION HOOKS & COMPONENTS
+   ============================================================================ */
+
+/**
+ * Custom hook for scroll-triggered animations
+ * @param threshold - Intersection threshold (0-1)
+ * @returns ref to attach and visibility state
+ */
 function useScrollAnimation(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -43,7 +130,23 @@ function useScrollAnimation(threshold = 0.15) {
   return { ref, isVisible };
 }
 
-// Reusable scroll reveal component
+/** Transform values for different animation directions */
+const DIRECTION_TRANSFORMS = {
+  up: "translateY(50px)",
+  down: "translateY(-50px)",
+  left: "translateX(50px)",
+  right: "translateX(-50px)",
+  scale: "scale(0.92)",
+  fade: "translateY(0)",
+} as const;
+
+/**
+ * ScrollReveal - Animates children on scroll into view
+ * @param children - Content to animate
+ * @param delay - Animation delay in ms
+ * @param direction - Animation direction
+ * @param duration - Animation duration in ms
+ */
 function ScrollReveal({ 
   children, 
   className = "", 
@@ -54,19 +157,10 @@ function ScrollReveal({
   children: ReactNode; 
   className?: string; 
   delay?: number;
-  direction?: "up" | "down" | "left" | "right" | "scale" | "fade";
+  direction?: keyof typeof DIRECTION_TRANSFORMS;
   duration?: number;
 }) {
   const { ref, isVisible } = useScrollAnimation();
-  
-  const transforms = {
-    up: "translateY(50px)",
-    down: "translateY(-50px)",
-    left: "translateX(50px)",
-    right: "translateX(-50px)",
-    scale: "scale(0.92)",
-    fade: "translateY(0)",
-  };
   
   return (
     <div
@@ -74,7 +168,7 @@ function ScrollReveal({
       className={className}
       style={{
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "translateY(0) translateX(0) scale(1)" : transforms[direction],
+        transform: isVisible ? "translateY(0) translateX(0) scale(1)" : DIRECTION_TRANSFORMS[direction],
         transition: `all ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
       }}
     >
@@ -83,7 +177,12 @@ function ScrollReveal({
   );
 }
 
-// Stagger animation for lists
+/**
+ * StaggerReveal - Animates list items with staggered timing
+ * @param children - Array of elements to stagger
+ * @param staggerDelay - Delay between each item
+ * @param baseDelay - Initial delay before first item
+ */
 function StaggerReveal({ 
   children, 
   className = "", 
@@ -115,19 +214,26 @@ function StaggerReveal({
   );
 }
 
+/* ============================================================================
+   MAIN PAGE COMPONENT
+   ============================================================================ */
+
 export default function HomePage() {
+  // Scroll and mouse position for parallax effects
   const [scrollY, setScrollY] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [heroLoaded, setHeroLoaded] = useState(false);
   
+  // Initialize event listeners for scroll/mouse tracking
   useEffect(() => {
-    // Trigger hero animation on mount
     const timer = setTimeout(() => setHeroLoaded(true), 100);
     
     const handleScroll = () => setScrollY(window.scrollY);
     const handleMouse = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
+    
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("mousemove", handleMouse, { passive: true });
+    
     return () => {
       clearTimeout(timer);
       window.removeEventListener("scroll", handleScroll);
@@ -136,10 +242,10 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background relative selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 relative selection:bg-cyan-500/30">
       {/* Chromatic gradient background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-500/5 via-background to-cyan-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-500/6 via-slate-900 to-cyan-500/6" />
         <div 
           className="absolute w-[600px] h-[600px] rounded-full blur-[150px] opacity-30"
           style={{ 
@@ -152,24 +258,23 @@ export default function HomePage() {
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
       </div>
       
-      {/* Navigation - with scroll-aware styling */}
+      {/* ========== NAVIGATION ========== */}
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-xl transition-all duration-300 ${
           scrollY > 50 
-            ? 'bg-background/95 border-border/20 shadow-lg shadow-black/5' 
-            : 'bg-background/80 border-border/10'
+            ? 'bg-slate-900/95 border-border/20 shadow-lg shadow-black/5' 
+            : 'bg-slate-900/80 border-border/10'
         }`}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex h-12 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="relative transition-transform duration-300 group-hover:scale-110">
-                <AudioWaveform className="h-5 w-5 text-cyan-400" />
-              </div>
-              <span className="text-sm font-semibold tracking-tight">Neural Speak</span>
+            {/* Brand logo */}
+            <Link href="/" className="group">
+              <Logo size="md" showText textClass="text-sm font-semibold tracking-tight text-slate-200" />
             </Link>
+            
+            {/* Navigation links & auth buttons */}
             <div className="flex items-center gap-1">
-              {/* Hide these on mobile */}
               <Link href="#features" className="hidden sm:block">
                 <Button variant="ghost" size="sm" className="cursor-pointer text-xs text-muted-foreground hover:text-foreground h-7 px-3 transition-colors duration-200">
                   Features
@@ -196,23 +301,27 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero - dramatic and compact */}
+      {/* ========== HERO SECTION ========== */}
       <section className="relative pt-24 pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left - Copy with staggered entrance */}
+            {/* Hero copy with staggered entrance */}
             <div className="space-y-6">
-              <div 
-                className="inline-flex items-center gap-2 text-[10px] font-mono text-cyan-400/80 bg-cyan-500/8 border border-cyan-500/15 px-3 py-1.5 tracking-wider"
+              <a 
+                href="https://www.resemble.ai/chatterbox/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[10px] font-mono text-slate-400 bg-slate-500/8 border border-slate-500/20 px-3 py-1.5 tracking-wider hover:bg-slate-500/12 hover:border-slate-500/30 transition-all duration-200 cursor-pointer"
                 style={{
                   opacity: heroLoaded ? 1 : 0,
                   transform: heroLoaded ? "translateY(0)" : "translateY(20px)",
                   transition: "all 800ms cubic-bezier(0.22, 1, 0.36, 1) 100ms",
                 }}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                POWERED BY CHATTERBOX AI
-              </div>
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
+                POWERED BY CHATTERBOX TTS
+                <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+              </a>
               
               <h1 
                 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]"
@@ -224,7 +333,7 @@ export default function HomePage() {
               >
                 <span className="block">Text to speech,</span>
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-amber-400 to-cyan-400">
-                  perfected.
+                  crafted for clarity.
                 </span>
               </h1>
               
@@ -262,7 +371,7 @@ export default function HomePage() {
                 </Link>
               </div>
               
-              {/* Metrics bar */}
+              {/* Hero metrics bar */}
               <div 
                 className="flex flex-wrap items-center gap-4 sm:gap-8 pt-6 border-t border-border/15"
                 style={{
@@ -271,11 +380,7 @@ export default function HomePage() {
                   transition: "all 900ms cubic-bezier(0.22, 1, 0.36, 1) 650ms",
                 }}
               >
-                {[
-                  { value: "24", label: "languages" },
-                  { value: "<3s", label: "latency" },
-                  { value: "48kHz", label: "quality" },
-                ].map((stat, i) => (
+                {HERO_METRICS.map((stat, i) => (
                   <div key={i} className="flex items-baseline gap-1.5">
                     <span className="text-lg font-semibold font-mono text-foreground">{stat.value}</span>
                     <span className="text-[11px] text-muted-foreground/80">{stat.label}</span>
@@ -284,7 +389,7 @@ export default function HomePage() {
               </div>
             </div>
             
-            {/* Right - Neural Network Voice Animation with parallax */}
+            {/* Neural Network Animation (desktop only) */}
             <div 
               className="relative hidden md:flex h-[350px] lg:h-[540px] items-center justify-center lg:justify-start lg:-ml-[8vw]"
               style={{
@@ -302,9 +407,9 @@ export default function HomePage() {
                 {[0, 1, 2, 3, 4].map((i) => (
                   <div
                     key={`input-${i}`}
-                    className="absolute w-4 h-4 rounded-full bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.7)] animate-[nodePulse_2.5s_ease-in-out_infinite]"
+                    className="absolute w-4 h-4 rounded-full bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.7)] animate-[nodePulse_4s_ease-in-out_infinite]"
                     style={{
-                      left: '8%',
+                      left: '8.7%',
                       top: `${15 + i * 17.5}%`,
                       animationDelay: `${i * 0.15}s`,
                     }}
@@ -315,9 +420,9 @@ export default function HomePage() {
                 {[0, 1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={`hidden1-${i}`}
-                    className="absolute w-3.5 h-3.5 rounded-full bg-cyan-400/80 shadow-[0_0_16px_rgba(34,211,238,0.5)] animate-[nodePulse_2.5s_ease-in-out_infinite]"
+                    className="absolute w-3.5 h-3.5 rounded-full bg-cyan-400/80 shadow-[0_0_16px_rgba(34,211,238,0.5)] animate-[nodePulse_4s_ease-in-out_infinite]"
                     style={{
-                      left: '30%',
+                      left: '30.7%',
                       top: `${10 + i * 16}%`,
                       animationDelay: `${0.2 + i * 0.1}s`,
                     }}
@@ -328,9 +433,9 @@ export default function HomePage() {
                 {[0, 1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={`hidden2-${i}`}
-                    className="absolute w-3.5 h-3.5 rounded-full bg-emerald-400/80 shadow-[0_0_16px_rgba(52,211,153,0.5)] animate-[nodePulse_2.5s_ease-in-out_infinite]"
+                    className="absolute w-3.5 h-3.5 rounded-full bg-emerald-400/80 shadow-[0_0_16px_rgba(52,211,153,0.5)] animate-[nodePulse_4s_ease-in-out_infinite]"
                     style={{
-                      left: '52%',
+                      left: '52.7%',
                       top: `${10 + i * 16}%`,
                       animationDelay: `${0.4 + i * 0.1}s`,
                     }}
@@ -341,9 +446,9 @@ export default function HomePage() {
                 {[0, 1, 2].map((i) => (
                   <div
                     key={`output-${i}`}
-                    className="absolute w-5 h-5 rounded-full bg-emerald-400 shadow-[0_0_24px_rgba(52,211,153,0.7)] animate-[nodePulse_2.5s_ease-in-out_infinite]"
+                    className="absolute w-5 h-5 rounded-full bg-emerald-400 shadow-[0_0_24px_rgba(52,211,153,0.7)] animate-[nodePulse_4s_ease-in-out_infinite]"
                     style={{
-                      left: '74%',
+                      left: '74.7%',
                       top: `${28 + i * 22}%`,
                       animationDelay: `${0.6 + i * 0.15}s`,
                     }}
@@ -367,8 +472,8 @@ export default function HomePage() {
                         x2="30%" y2={`${12 + j * 16}%`}
                         stroke="url(#lineGradient)"
                         strokeWidth="1"
-                        className="animate-[linePulse_3s_ease-in-out_infinite]"
-                        style={{ animationDelay: `${(i + j) * 0.05}s` }}
+                        className="animate-[linePulse_5s_ease-in-out_infinite]"
+                        style={{ animationDelay: `${(i + j) * 0.08}s` }}
                       />
                     ))
                   )}
@@ -381,8 +486,8 @@ export default function HomePage() {
                         x2="52%" y2={`${12 + j * 16}%`}
                         stroke="url(#lineGradient)"
                         strokeWidth="1"
-                        className="animate-[linePulse_3s_ease-in-out_infinite]"
-                        style={{ animationDelay: `${0.3 + (i + j) * 0.05}s` }}
+                        className="animate-[linePulse_5s_ease-in-out_infinite]"
+                        style={{ animationDelay: `${0.5 + (i + j) * 0.08}s` }}
                       />
                     ))
                   )}
@@ -395,17 +500,17 @@ export default function HomePage() {
                         x2="74%" y2={`${30 + j * 22}%`}
                         stroke="url(#lineGradient)"
                         strokeWidth="1"
-                        className="animate-[linePulse_3s_ease-in-out_infinite]"
-                        style={{ animationDelay: `${0.6 + (i + j) * 0.05}s` }}
+                        className="animate-[linePulse_5s_ease-in-out_infinite]"
+                        style={{ animationDelay: `${1 + (i + j) * 0.08}s` }}
                       />
                     ))
                   )}
                 </svg>
                 
                 {/* Signal pulses flowing through network - now colored to match */}
-                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_3s_ease-in-out_infinite]" />
-                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_3s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
-                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_3s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_6s_ease-in-out_infinite] opacity-0" style={{ left: '8.7%', top: '52%' }} />
+                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_6s_ease-in-out_infinite] opacity-0" style={{ left: '8.7%', top: '52%', animationDelay: '2s' }} />
+                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_6s_ease-in-out_infinite] opacity-0" style={{ left: '8.7%', top: '52%', animationDelay: '4s' }} />
                 
                 {/* Voice waveform output - complex multi-layer voice visualization */}
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 flex items-center">
@@ -432,7 +537,7 @@ export default function HomePage() {
                     ].map((bar, i) => (
                       <div
                         key={i}
-                        className="rounded-full animate-[voiceWave_2.8s_ease-in-out_infinite]"
+                        className="rounded-full animate-[voiceWave_4.5s_ease-in-out_infinite]"
                         style={{
                           width: `${bar.w}px`,
                           height: `${bar.h * 80}px`,
@@ -448,7 +553,7 @@ export default function HomePage() {
                     {[0.4, 0.7, 1, 0.6, 0.9, 0.5, 0.8].map((h, i) => (
                       <div
                         key={i}
-                        className="w-[4px] rounded-full animate-[voiceWave_3.5s_ease-in-out_infinite]"
+                        className="w-[4px] rounded-full animate-[voiceWave_5.5s_ease-in-out_infinite]"
                         style={{
                           height: `${h * 60}px`,
                           background: 'rgb(52,211,153)',
@@ -460,7 +565,7 @@ export default function HomePage() {
                 </div>
                 
                 {/* Labels - only visible on large screens */}
-                <span className="absolute left-[5%] bottom-[-24px] text-[10px] font-mono text-cyan-400/60 tracking-wider uppercase hidden lg:block">Text Input</span>
+                <span className="absolute left-[8%] bottom-[-24px] text-[10px] font-mono text-cyan-400/60 tracking-wider uppercase hidden lg:block">Text Input</span>
                 <span className="absolute left-[33%] bottom-[-24px] text-[10px] font-mono text-muted-foreground/50 tracking-wider uppercase hidden lg:block">Neural Layers</span>
                 <span className="absolute right-[-2%] top-[36%] text-[10px] font-mono text-emerald-400/60 tracking-wider uppercase hidden lg:block">Voice Output</span>
               </div>
@@ -469,10 +574,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Demo Section */}
+      {/* ========== DEMO SECTION ========== */}
       <DemoSection />
 
-      {/* Features - grid layout with scroll animations */}
+      {/* ========== FEATURES SECTION ========== */}
       <section id="features" className="relative py-20 border-t border-border/10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <ScrollReveal className="max-w-xl mb-12">
@@ -485,39 +590,11 @@ export default function HomePage() {
             </p>
           </ScrollReveal>
           
+          {/* Feature cards grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-border/20">
-            {[
-              {
-                icon: <Mic className="h-4 w-4" />,
-                title: "Voice Cloning",
-                desc: "30-second sample creates a digital voice replica.",
-                color: "rose"
-              },
-              {
-                icon: <Activity className="h-4 w-4" />,
-                title: "Emotional Range",
-                desc: "Control intensity, pacing, and expression.",
-                color: "amber"
-              },
-              {
-                icon: <Globe2 className="h-4 w-4" />,
-                title: "24 Languages",
-                desc: "English, Spanish, Japanese, Arabic, and more.",
-                color: "cyan"
-              },
-              {
-                icon: <Zap className="h-4 w-4" />,
-                title: "Instant Output",
-                desc: "GPU-accelerated. Results in under 3 seconds.",
-                color: "emerald"
-              },
-            ].map((feature, i) => (
-              <ScrollReveal 
-                key={i} 
-                delay={i * 100}
-                direction="up"
-              >
-                <div className="bg-background p-6 group hover:bg-card/50 transition-all duration-300 cursor-default h-full">
+            {FEATURES.map((feature, i) => (
+              <ScrollReveal key={i} delay={i * 100} direction="up">
+                <div className="bg-slate-900/40 p-6 group hover:bg-slate-900/55 transition-all duration-300 cursor-default h-full">
                   <div className={`inline-flex items-center justify-center w-8 h-8 mb-4 transition-transform duration-300 group-hover:scale-110 ${
                     feature.color === 'rose' ? 'bg-rose-500/10 text-rose-400' :
                     feature.color === 'amber' ? 'bg-amber-500/10 text-amber-400' :
@@ -535,65 +612,110 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How it works - horizontal flow with scroll animations */}
-      <section className="relative py-20 border-t border-border/10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <ScrollReveal className="max-w-xl mb-12">
-            <span className="text-[10px] font-mono text-amber-400/80 mb-2 block tracking-wider">WORKFLOW</span>
-            <h2 className="text-3xl font-bold tracking-tight mb-3 text-foreground">
-              Three steps to studio audio
+      {/* ========== WORKFLOW SECTION ========== */}
+      <section className="relative py-24 border-t border-border/10 overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-rose-500/5 rounded-full blur-3xl" />
+        </div>
+        
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
+          {/* Section header */}
+          <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-2 text-[10px] font-mono text-amber-400/80 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-full mb-4">
+              <Zap className="w-3 h-3" />
+              HOW IT WORKS
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-foreground">
+              Three steps to
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-400">
+                studio-quality audio
+              </span>
             </h2>
-            <p className="text-muted-foreground/80">
-              No expertise required. Write, configure, export.
+            <p className="text-muted-foreground/80 text-lg">
+              No expertise required. From text to broadcast-ready audio in seconds.
             </p>
           </ScrollReveal>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                num: "01",
-                title: "Write your script",
-                desc: "Paste text up to 5,000 characters. We handle punctuation, abbreviations, and formatting.",
-              },
-              {
-                num: "02",
-                title: "Select a voice",
-                desc: "Choose from our library or upload a 30-second sample to clone your own.",
-              },
-              {
-                num: "03",
-                title: "Export instantly",
-                desc: "Download high-fidelity WAV files. Commercial-ready. No restrictions.",
-              },
-            ].map((step, i) => {
-              const colors = ['text-rose-500/30 group-hover:text-rose-500/50', 'text-amber-500/30 group-hover:text-amber-500/50', 'text-cyan-500/30 group-hover:text-cyan-500/50'];
-              return (
-                <ScrollReveal key={i} delay={i * 150} direction="up">
+          {/* Workflow steps - horizontal timeline */}
+          <div className="relative">
+            {/* Connecting line (desktop) */}
+            <div className="hidden lg:block absolute top-24 left-[16.67%] right-[16.67%] h-px">
+              <div className="w-full h-full bg-gradient-to-r from-rose-500/30 via-amber-500/30 to-emerald-500/30" />
+              {/* Animated pulse along the line */}
+              <div className="absolute top-0 left-0 w-20 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent animate-[slideRight_3s_ease-in-out_infinite]" />
+            </div>
+            
+            <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+              {WORKFLOW_STEPS.map((step, i) => (
+                <ScrollReveal key={i} delay={i * 200} direction="up">
                   <div className="relative group">
-                    <div className="flex items-start gap-4">
-                      <span className={`text-4xl font-bold font-mono ${colors[i]} transition-colors duration-300`}>
+                    {/* Step card */}
+                    <div className="relative bg-slate-900/50 border border-border/20 rounded-xl p-8 transition-all duration-500 hover:border-border/40 hover:bg-slate-900/70 hover:shadow-2xl hover:shadow-amber-500/5 hover:-translate-y-2">
+                      {/* Step number badge */}
+                      <div className={`absolute -top-4 left-8 inline-flex items-center justify-center w-8 h-8 rounded-lg font-mono font-bold text-sm shadow-lg ${
+                        i === 0 ? 'bg-gradient-to-br from-rose-500 to-rose-600 text-white shadow-rose-500/25' :
+                        i === 1 ? 'bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-amber-500/25' :
+                        'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-emerald-500/25'
+                      }`}>
                         {step.num}
-                      </span>
-                      <div className="pt-2">
-                        <h3 className="font-semibold mb-2">{step.title}</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
                       </div>
+                      
+                      {/* Icon */}
+                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 mt-2 transition-transform duration-300 group-hover:scale-110 ${
+                        i === 0 ? 'bg-rose-500/10' :
+                        i === 1 ? 'bg-amber-500/10' :
+                        'bg-emerald-500/10'
+                      }`}>
+                        {i === 0 ? <Type className={`w-7 h-7 text-rose-400`} /> :
+                         i === 1 ? <Settings className={`w-7 h-7 text-amber-400`} /> :
+                         <Download className={`w-7 h-7 text-emerald-400`} />}
+                      </div>
+                      
+                      {/* Content */}
+                      <h3 className="text-xl font-semibold mb-3 text-foreground">{step.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed">{step.desc}</p>
+                      
+                      {/* Decorative corner accent */}
+                      <div className={`absolute bottom-0 right-0 w-24 h-24 opacity-5 ${
+                        i === 0 ? 'bg-rose-500' :
+                        i === 1 ? 'bg-amber-500' :
+                        'bg-emerald-500'
+                      } blur-2xl rounded-full translate-x-1/2 translate-y-1/2`} />
                     </div>
+                    
+                    {/* Arrow connector (mobile) */}
                     {i < 2 && (
-                      <div className="hidden md:block absolute top-6 left-full w-8 h-px bg-gradient-to-r from-border/40 to-transparent -translate-x-4" />
+                      <div className="lg:hidden flex justify-center py-4">
+                        <ArrowRight className="w-5 h-5 text-muted-foreground/30 rotate-90" />
+                      </div>
                     )}
                   </div>
                 </ScrollReveal>
-              );
-            })}
+              ))}
+            </div>
           </div>
+          
+          {/* Bottom CTA */}
+          <ScrollReveal delay={600} direction="up">
+            <div className="mt-16 text-center">
+              <Link href="/dashboard">
+                <Button className="cursor-pointer h-12 px-8 bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-white font-semibold transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/25 hover:scale-105">
+                  Try It Now — It&apos;s Free
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* Pricing - single card with scroll animations */}
+      {/* ========== PRICING SECTION ========== */}
       <section id="pricing" className="relative py-20 border-t border-border/10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Pricing copy */}
             <ScrollReveal direction="right">
               <span className="text-[10px] font-mono text-emerald-400/80 mb-2 block tracking-wider">PRICING</span>
               <h2 className="text-3xl font-bold tracking-tight mb-3 text-foreground">
@@ -603,21 +725,10 @@ export default function HomePage() {
                 10 free credits included. No credit card required to start.
               </p>
               
+              {/* Feature list */}
               <ul className="space-y-2">
-                {[
-                  "Unlimited voice cloning",
-                  "All 24 languages",
-                  "High-fidelity WAV exports",
-                  "Commercial usage rights",
-                  "Priority GPU processing",
-                ].map((item, i) => (
-                  <li 
-                    key={i} 
-                    className="flex items-center gap-2 text-sm"
-                    style={{
-                      animationDelay: `${i * 100}ms`,
-                    }}
-                  >
+                {PRICING_FEATURES.map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
@@ -625,6 +736,7 @@ export default function HomePage() {
               </ul>
             </ScrollReveal>
             
+            {/* Pricing card */}
             <ScrollReveal direction="left" delay={200}>
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 blur-3xl" />
@@ -652,42 +764,84 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Final CTA with scroll animation */}
-      <section className="relative py-20 border-t border-border/10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 text-center">
+      {/* ========== FINAL CTA SECTION ========== */}
+      <section className="relative py-24 border-t border-border/10 overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gradient-to-r from-cyan-500/10 via-emerald-500/10 to-cyan-500/10 blur-3xl rounded-full" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+        </div>
+        
+        <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6">
           <ScrollReveal direction="scale">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-foreground">
-              Ready to create?
-            </h2>
-            <p className="text-muted-foreground/80 mb-8 max-w-md mx-auto">
-              Join thousands using Neural Speak for professional voice synthesis.
-            </p>
-            <div className="flex items-center justify-center gap-3">
-              <Link href="/dashboard">
-                <Button className="cursor-pointer h-11 px-6 bg-white text-black hover:bg-white/90 font-medium transition-all duration-300 hover:shadow-lg">
-                  Launch App
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+            <div className="text-center space-y-6">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 text-[10px] font-mono text-cyan-400/80 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1.5 rounded-full">
+                <Sparkles className="w-3 h-3" />
+                START CREATING TODAY
+              </div>
+              
+              {/* Heading */}
+              <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+                Ready to bring your
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">
+                  words to life?
+                </span>
+              </h2>
+              
+              {/* Description */}
+              <p className="text-lg text-muted-foreground/80 max-w-xl mx-auto">
+                Join creators, developers, and businesses using Neural Speak to generate professional voice content.
+              </p>
+              
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <Link href="/dashboard">
+                  <Button className="cursor-pointer h-12 px-8 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-white font-semibold transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/25 hover:scale-105">
+                    Start Free
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="#demo">
+                  <Button variant="outline" className="cursor-pointer h-12 px-8 border-border/30 hover:border-cyan-500/50 font-medium">
+                    <Play className="mr-2 h-4 w-4" />
+                    Listen to Samples
+                  </Button>
+                </Link>
+              </div>
+              
+              {/* Trust indicators */}
+              <div className="flex items-center justify-center gap-8 pt-8 text-sm text-muted-foreground/60">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  <span>No credit card required</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  <span>10 free credits</span>
+                </div>
+              </div>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Footer - minimal with fade in */}
+      {/* ========== FOOTER ========== */}
       <ScrollReveal direction="fade">
         <footer className="border-t border-border/10 py-8">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <AudioWaveform className="h-4 w-4 text-cyan-400" />
-                <span className="text-sm font-semibold">Neural Speak</span>
-              </div>
+              {/* Footer logo */}
+              <Logo size="sm" showText textClass="text-sm font-semibold text-slate-200" />
+              
+              {/* Footer links */}
               <div className="flex items-center gap-6 text-xs text-muted-foreground">
                 <Link href="#features" className="hover:text-foreground transition-colors duration-200">Features</Link>
                 <Link href="#pricing" className="hover:text-foreground transition-colors duration-200">Pricing</Link>
                 <Link href="/dashboard" className="hover:text-foreground transition-colors duration-200">Dashboard</Link>
               </div>
+              
+              {/* Copyright */}
               <p className="text-xs text-muted-foreground">
                 © 2026 Neural Speak
               </p>

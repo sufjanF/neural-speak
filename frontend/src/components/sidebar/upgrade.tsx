@@ -18,7 +18,7 @@ export default function Upgrade() {
     <Button
       variant="outline"
       size="sm"
-      className="group relative ml-2 h-8 overflow-hidden border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 to-emerald-500/5 text-cyan-400 transition-all duration-300 hover:border-cyan-400 hover:gradient-shift hover:text-white"
+      className="group relative ml-2 h-8 overflow-hidden border-violet-500/30 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/5 text-violet-400 transition-all duration-300 hover:border-violet-400 hover:gradient-shift hover:text-white"
       onClick={upgrade}
     >
       <div className="flex items-center gap-1.5">
@@ -28,7 +28,7 @@ export default function Upgrade() {
       </div>
 
       {/* Subtle glow effect */}
-      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-cyan-400/20 to-emerald-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-violet-400/20 to-fuchsia-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </Button>
   );
 }

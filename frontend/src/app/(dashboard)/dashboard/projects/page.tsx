@@ -149,7 +149,7 @@ export default function Projects() {
             </div>
             <Button
               onClick={() => router.push("/dashboard/create")}
-              className="gap-2 self-start bg-gradient-to-r from-cyan-500 to-emerald-500 text-white hover:from-cyan-400 hover:to-emerald-400 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20 sm:self-auto"
+              className="gap-2 self-start bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-400 hover:to-fuchsia-400 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20 sm:self-auto"
             >
               <Plus className="h-4 w-4" />
               New Audio
@@ -201,7 +201,7 @@ export default function Projects() {
                   {!searchQuery && (
                     <Button
                       onClick={() => router.push("/dashboard/create")}
-                      className="gap-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white hover:from-cyan-400 hover:to-emerald-400 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20"
+                      className="gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-400 hover:to-fuchsia-400 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/20"
                     >
                       <Plus className="h-4 w-4" />
                       Create Your First Audio

@@ -41,7 +41,7 @@ export default function TextInput({
             placeholder="Type or paste your text here... Maximum 500 characters."
             maxLength={500}
             rows={8}
-            className="w-full rounded-md border border-border/20 bg-muted/20 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-all duration-200 focus:border-cyan-400/40 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
+            className="w-full rounded-md border border-border/20 bg-muted/20 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-all duration-200 focus:border-violet-400/40 focus:outline-none focus:ring-2 focus:ring-violet-400/20"
           />
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>{text.length}/500 characters</span>
@@ -58,16 +58,16 @@ export default function TextInput({
             )}
           </div>
           {currentAudio && (
-            <div className="rounded-sm border border-cyan-400/20 bg-gradient-to-r from-cyan-400/10 to-emerald-500/10 p-3 transition-all duration-300">
+            <div className="rounded-sm border border-violet-400/20 bg-gradient-to-r from-violet-400/10 to-fuchsia-500/10 p-3 transition-all duration-300">
               <div className="mb-2 flex items-center justify-between">
-                <h4 className="text-xs font-semibold text-cyan-300">
+                <h4 className="text-xs font-semibold text-violet-300">
                   Latest Generation
                 </h4>
                 <Button
                   onClick={() => onDownload(currentAudio)}
                   variant="ghost"
                   size="sm"
-                  className="h-6 gap-1 px-2 text-cyan-400 hover:bg-cyan-400/10 hover:text-cyan-300"
+                  className="h-6 gap-1 px-2 text-violet-400 hover:bg-violet-400/10 hover:text-violet-300"
                 >
                   <Download className="h-3 w-3" />
                   <span className="text-xs">Download</span>
