@@ -445,6 +445,37 @@
   }
 }
 
+@keyframes dataFlowContained {
+  0% { 
+    left: 6.5%; 
+    top: 12.5%; 
+    opacity: 0;
+  }
+  10% { 
+    opacity: 1;
+  }
+  30% { 
+    left: 29%; 
+    top: 54%;
+  }
+  50% { 
+    left: 51%; 
+    top: 54%;
+  }
+  70% { 
+    left: 73.5%; 
+    top: 48.5%;
+  }
+  90% { 
+    opacity: 0;
+  }
+  100% { 
+    left: 98%; 
+    top: 46%; 
+    opacity: 0;
+  }
+}
+
 @keyframes slideRight {
   0% { 
     left: 0%;

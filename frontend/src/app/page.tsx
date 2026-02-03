@@ -304,9 +304,9 @@ export default function HomePage() {
       {/* ========== HERO SECTION ========== */}
       <section className="relative pt-24 pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Hero copy with staggered entrance */}
-            <div className="space-y-6">
+            <div className="space-y-6 lg:pr-4">
               <a 
                 href="https://www.resemble.ai/chatterbox/"
                 target="_blank"
@@ -391,7 +391,7 @@ export default function HomePage() {
             
             {/* Neural Network Animation (desktop only) */}
             <div 
-              className="relative hidden md:flex h-[350px] lg:h-[540px] items-center justify-center lg:justify-start lg:-ml-[8vw]"
+              className="relative hidden md:flex h-[500px] lg:h-[720px] items-center justify-start lg:-ml-8"
               style={{
                 opacity: heroLoaded ? 1 : 0,
                 transform: heroLoaded ? `translateY(${scrollY * 0.05}px)` : "translateY(60px) scale(0.95)",
@@ -401,16 +401,16 @@ export default function HomePage() {
               {/* Soft ambient glow */}
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-emerald-500/10 blur-3xl" />
               
-              {/* Neural network container - responsive sizing */}
-              <div className="relative w-[400px] h-[320px] lg:w-[620px] lg:h-[480px]">
+              {/* Neural network container - responsive sizing with proper containment */}
+              <div className="relative w-full max-w-[580px] lg:max-w-[820px] h-[440px] lg:h-[640px]">
                 {/* Neural nodes - input layer (left) */}
                 {[0, 1, 2, 3, 4].map((i) => (
                   <div
                     key={`input-${i}`}
-                    className="absolute w-4 h-4 rounded-full bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.7)] animate-[nodePulse_4s_ease-in-out_infinite]"
+                    className="absolute w-3 h-3 lg:w-4 lg:h-4 rounded-full bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.7)] animate-[nodePulse_4s_ease-in-out_infinite]"
                     style={{
-                      left: '8.7%',
-                      top: `${15 + i * 17.5}%`,
+                      left: '6%',
+                      top: `${12 + i * 18}%`,
                       animationDelay: `${i * 0.15}s`,
                     }}
                   />
@@ -420,10 +420,10 @@ export default function HomePage() {
                 {[0, 1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={`hidden1-${i}`}
-                    className="absolute w-3.5 h-3.5 rounded-full bg-cyan-400/80 shadow-[0_0_16px_rgba(34,211,238,0.5)] animate-[nodePulse_4s_ease-in-out_infinite]"
+                    className="absolute w-2.5 h-2.5 lg:w-3.5 lg:h-3.5 rounded-full bg-cyan-400/80 shadow-[0_0_16px_rgba(34,211,238,0.5)] animate-[nodePulse_4s_ease-in-out_infinite]"
                     style={{
-                      left: '30.7%',
-                      top: `${10 + i * 16}%`,
+                      left: '28%',
+                      top: `${8 + i * 15}%`,
                       animationDelay: `${0.2 + i * 0.1}s`,
                     }}
                   />
@@ -433,10 +433,10 @@ export default function HomePage() {
                 {[0, 1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={`hidden2-${i}`}
-                    className="absolute w-3.5 h-3.5 rounded-full bg-emerald-400/80 shadow-[0_0_16px_rgba(52,211,153,0.5)] animate-[nodePulse_4s_ease-in-out_infinite]"
+                    className="absolute w-2.5 h-2.5 lg:w-3.5 lg:h-3.5 rounded-full bg-emerald-400/80 shadow-[0_0_16px_rgba(52,211,153,0.5)] animate-[nodePulse_4s_ease-in-out_infinite]"
                     style={{
-                      left: '52.7%',
-                      top: `${10 + i * 16}%`,
+                      left: '50%',
+                      top: `${8 + i * 15}%`,
                       animationDelay: `${0.4 + i * 0.1}s`,
                     }}
                   />
@@ -446,17 +446,17 @@ export default function HomePage() {
                 {[0, 1, 2].map((i) => (
                   <div
                     key={`output-${i}`}
-                    className="absolute w-5 h-5 rounded-full bg-emerald-400 shadow-[0_0_24px_rgba(52,211,153,0.7)] animate-[nodePulse_4s_ease-in-out_infinite]"
+                    className="absolute w-4 h-4 lg:w-5 lg:h-5 rounded-full bg-emerald-400 shadow-[0_0_24px_rgba(52,211,153,0.7)] animate-[nodePulse_4s_ease-in-out_infinite]"
                     style={{
-                      left: '74.7%',
-                      top: `${28 + i * 22}%`,
+                      left: '72%',
+                      top: `${25 + i * 22}%`,
                       animationDelay: `${0.6 + i * 0.15}s`,
                     }}
                   />
                 ))}
                 
                 {/* Connection lines SVG */}
-                <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
+                <svg className="absolute inset-0 w-full h-full pointer-events-none">
                   <defs>
                     <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="rgb(34,211,238)" stopOpacity="0.3" />
@@ -468,8 +468,8 @@ export default function HomePage() {
                     [0,1,2,3,4,5].map((j) => (
                       <line
                         key={`i-h1-${i}-${j}`}
-                        x1="12%" y1={`${17 + i * 17.5}%`}
-                        x2="30%" y2={`${12 + j * 16}%`}
+                        x1="9%" y1={`${14 + i * 18}%`}
+                        x2="27%" y2={`${10 + j * 15}%`}
                         stroke="url(#lineGradient)"
                         strokeWidth="1"
                         className="animate-[linePulse_5s_ease-in-out_infinite]"
@@ -482,8 +482,8 @@ export default function HomePage() {
                     [0,1,2,3,4,5].map((j) => (
                       <line
                         key={`h1-h2-${i}-${j}`}
-                        x1="34%" y1={`${12 + i * 16}%`}
-                        x2="52%" y2={`${12 + j * 16}%`}
+                        x1="31%" y1={`${10 + i * 15}%`}
+                        x2="49%" y2={`${10 + j * 15}%`}
                         stroke="url(#lineGradient)"
                         strokeWidth="1"
                         className="animate-[linePulse_5s_ease-in-out_infinite]"
@@ -496,8 +496,8 @@ export default function HomePage() {
                     [0,1,2].map((j) => (
                       <line
                         key={`h2-o-${i}-${j}`}
-                        x1="56%" y1={`${12 + i * 16}%`}
-                        x2="74%" y2={`${30 + j * 22}%`}
+                        x1="53%" y1={`${10 + i * 15}%`}
+                        x2="71%" y2={`${27 + j * 22}%`}
                         stroke="url(#lineGradient)"
                         strokeWidth="1"
                         className="animate-[linePulse_5s_ease-in-out_infinite]"
@@ -507,40 +507,35 @@ export default function HomePage() {
                   )}
                 </svg>
                 
-                {/* Signal pulses flowing through network - now colored to match */}
-                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_6s_ease-in-out_infinite] opacity-0" style={{ left: '8.7%', top: '52%' }} />
-                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_6s_ease-in-out_infinite] opacity-0" style={{ left: '8.7%', top: '52%', animationDelay: '2s' }} />
-                <div className="absolute w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlow_6s_ease-in-out_infinite] opacity-0" style={{ left: '8.7%', top: '52%', animationDelay: '4s' }} />
+                {/* Signal pulses flowing through network - centered with transform */}
+                <div className="absolute w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlowContained_6s_ease-in-out_infinite] opacity-0 -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlowContained_6s_ease-in-out_infinite] opacity-0 -translate-x-1/2 -translate-y-1/2" style={{ animationDelay: '2s' }} />
+                <div className="absolute w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-[dataFlowContained_6s_ease-in-out_infinite] opacity-0 -translate-x-1/2 -translate-y-1/2" style={{ animationDelay: '4s' }} />
                 
-                {/* Voice waveform output - complex multi-layer voice visualization */}
-                <div className="absolute right-[4%] top-1/2 -translate-y-1/2 flex items-center">
-                  {/* Primary waveform - varied heights and widths for realistic voice */}
-                  <div className="flex items-center gap-[2px]">
+                {/* Voice waveform output - aligned with middle output node at 47% */}
+                <div className="absolute right-[3%] top-[47%] -translate-y-1/2 flex items-center">
+                  {/* Primary waveform - smaller bars */}
+                  <div className="flex items-center gap-[3px]">
                     {[
-                      { h: 0.3, w: 2, d: 0 },
-                      { h: 0.5, w: 3, d: 0.05 },
-                      { h: 0.8, w: 2, d: 0.1 },
+                      { h: 0.3, w: 3, d: 0 },
+                      { h: 0.5, w: 4, d: 0.05 },
+                      { h: 0.8, w: 3, d: 0.1 },
                       { h: 1, w: 4, d: 0.12 },
                       { h: 0.7, w: 3, d: 0.15 },
-                      { h: 0.9, w: 2, d: 0.18 },
-                      { h: 0.5, w: 3, d: 0.22 },
+                      { h: 0.9, w: 3, d: 0.18 },
+                      { h: 0.5, w: 4, d: 0.22 },
                       { h: 0.85, w: 4, d: 0.25 },
                       { h: 1, w: 3, d: 0.28 },
-                      { h: 0.6, w: 2, d: 0.32 },
-                      { h: 0.8, w: 3, d: 0.35 },
-                      { h: 0.4, w: 2, d: 0.4 },
-                      { h: 0.7, w: 4, d: 0.42 },
-                      { h: 0.95, w: 3, d: 0.45 },
-                      { h: 0.55, w: 2, d: 0.5 },
-                      { h: 0.75, w: 3, d: 0.52 },
-                      { h: 0.35, w: 2, d: 0.58 },
+                      { h: 0.6, w: 3, d: 0.32 },
+                      { h: 0.8, w: 4, d: 0.35 },
+                      { h: 0.4, w: 3, d: 0.4 },
                     ].map((bar, i) => (
                       <div
                         key={i}
                         className="rounded-full animate-[voiceWave_4.5s_ease-in-out_infinite]"
                         style={{
                           width: `${bar.w}px`,
-                          height: `${bar.h * 80}px`,
+                          height: `${bar.h * 82}px`,
                           background: `linear-gradient(to top, rgb(52,211,153), rgb(34,211,238))`,
                           boxShadow: '0 0 6px rgba(52,211,153,0.6)',
                           animationDelay: `${bar.d}s`,
@@ -549,8 +544,8 @@ export default function HomePage() {
                     ))}
                   </div>
                   {/* Secondary glow layer for depth */}
-                  <div className="absolute inset-0 blur-sm opacity-50 flex items-center gap-[2px]">
-                    {[0.4, 0.7, 1, 0.6, 0.9, 0.5, 0.8].map((h, i) => (
+                  <div className="absolute inset-0 blur-sm opacity-50 flex items-center gap-[3px]">
+                    {[0.4, 0.7, 1, 0.6, 0.9].map((h, i) => (
                       <div
                         key={i}
                         className="w-[4px] rounded-full animate-[voiceWave_5.5s_ease-in-out_infinite]"
@@ -564,10 +559,12 @@ export default function HomePage() {
                   </div>
                 </div>
                 
-                {/* Labels - only visible on large screens */}
-                <span className="absolute left-[8%] bottom-[-24px] text-[10px] font-mono text-cyan-400/60 tracking-wider uppercase hidden lg:block">Text Input</span>
-                <span className="absolute left-[33%] bottom-[-24px] text-[10px] font-mono text-muted-foreground/50 tracking-wider uppercase hidden lg:block">Neural Layers</span>
-                <span className="absolute right-[2%] top-[36%] text-[10px] font-mono text-emerald-400/60 tracking-wider uppercase hidden lg:block">Voice Output</span>
+                {/* Labels - positioned within container bounds */}
+                <div className="absolute inset-x-0 bottom-[-28px] flex items-center justify-between px-2 lg:px-4 pointer-events-none">
+                  <span className="text-[9px] lg:text-[10px] font-mono text-cyan-400/60 tracking-wider uppercase hidden lg:block whitespace-nowrap">Text Input</span>
+                  <span className="text-[9px] lg:text-[10px] font-mono text-slate-400/80 tracking-wider uppercase hidden lg:block whitespace-nowrap">Neural Layers</span>
+                  <span className="text-[9px] lg:text-[10px] font-mono text-emerald-400/60 tracking-wider uppercase hidden lg:block whitespace-nowrap">Voice Output</span>
+                </div>
               </div>
             </div>
           </div>
