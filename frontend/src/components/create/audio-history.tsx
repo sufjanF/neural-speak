@@ -1,10 +1,48 @@
+/**
+ * Audio History Component
+ * ========================
+ * 
+ * A grid display of recently generated audio projects. Shows audio cards
+ * with metadata, play controls, and download buttons. Includes an empty
+ * state for new users.
+ * 
+ * @module components/create/audio-history
+ * 
+ * Features:
+ * - Responsive grid layout (1-4 columns based on viewport)
+ * - Audio cards with language, timestamp, and text preview
+ * - Play and download action buttons
+ * - Hover animations with translate and shadow effects
+ * - Empty state with icon and message
+ * - Gradient accent styling matching app theme
+ * 
+ * @example
+ * <AudioHistory
+ *   generatedAudios={audios}
+ *   languages={LANGUAGES}
+ *   onPlay={playAudio}
+ *   onDownload={downloadAudio}
+ * />
+ */
 "use client";
 
 import { Music, Play, Download } from "lucide-react";
 import { Button } from "~/components/ui/button";
-
 import type { GeneratedAudio, Language } from "~/types/tts";
 
+// =============================================================================
+// TYPE DEFINITIONS
+// =============================================================================
+
+/**
+ * Props for the AudioHistory component.
+ * 
+ * @interface AudioHistoryProps
+ * @property {GeneratedAudio[]} generatedAudios - Array of audio objects to display
+ * @property {Language[]} languages - Language list for code-to-name mapping
+ * @property {function} onPlay - Play button click handler
+ * @property {function} onDownload - Download button click handler
+ */
 interface AudioHistoryProps {
   generatedAudios: GeneratedAudio[];
   languages: Language[];
@@ -12,6 +50,19 @@ interface AudioHistoryProps {
   onDownload: (audio: GeneratedAudio) => void;
 }
 
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
+
+/**
+ * AudioHistory - Grid display of generated audio projects.
+ * 
+ * Renders a responsive grid of audio cards with metadata and
+ * action buttons. Shows an empty state when no audio exists.
+ * 
+ * @param {AudioHistoryProps} props - Component props
+ * @returns {JSX.Element} The audio history grid UI
+ */
 export default function AudioHistory({
   generatedAudios,
   languages,
@@ -21,6 +72,7 @@ export default function AudioHistory({
   return (
     <div className="mt-4 border-t border-border/20 px-2 py-5 sm:px-4">
       <div className="mx-auto max-w-7xl">
+        {/* Section Header */}
         <div className="mb-5 text-center">
           <h2 className="mb-1.5 text-lg font-semibold text-foreground">
             Recent Generations
@@ -29,6 +81,8 @@ export default function AudioHistory({
             Your speech generation history
           </p>
         </div>
+        
+        {/* Conditional Render: Grid or Empty State */}
         {generatedAudios.length > 0 ? (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {generatedAudios.map((audio, index) => (
@@ -36,12 +90,14 @@ export default function AudioHistory({
                 key={index}
                 className="group relative overflow-hidden rounded-sm border border-border/20 bg-card/40 p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-400/30 hover:shadow-lg hover:shadow-violet-400/5"
               >
+                {/* Card Header with Icon and Metadata */}
                 <div className="mb-2.5 flex items-start justify-between">
                   <div className="flex items-center gap-2">
                     <div className="flex h-7 w-7 items-center justify-center rounded-sm gradient-shift shadow-lg">
                       <Music className="h-3.5 w-3.5 text-white" />
                     </div>
                     <div>
+                      {/* Display language name by looking up code */}
                       <p className="text-xs font-medium text-foreground">
                         {
                           languages.find((l) => l.code === audio.language)
@@ -54,9 +110,32 @@ export default function AudioHistory({
                     </div>
                   </div>
                 </div>
+
+                {/* Voice and Settings Info */}
+                {audio.voiceName && (
+                  <div className="mb-2 flex flex-wrap gap-1.5">
+                    <span className="inline-flex items-center rounded-sm bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-medium text-violet-400">
+                      🎤 {audio.voiceName}
+                    </span>
+                    {audio.exaggeration !== undefined && (
+                      <span className="inline-flex items-center rounded-sm bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-400">
+                        Expr: {Math.round(audio.exaggeration * 100)}%
+                      </span>
+                    )}
+                    {audio.cfgWeight !== undefined && (
+                      <span className="inline-flex items-center rounded-sm bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-medium text-cyan-400">
+                        Pace: {Math.round(audio.cfgWeight * 100)}%
+                      </span>
+                    )}
+                  </div>
+                )}
+                
+                {/* Text Preview (truncated to 3 lines) */}
                 <p className="mb-2.5 line-clamp-3 text-xs text-muted-foreground">
                   {audio.text}
                 </p>
+                
+                {/* Action Buttons */}
                 <div className="flex gap-2">
                   <Button
                     onClick={() => onPlay(audio)}

@@ -1,7 +1,34 @@
+/**
+ * Projects Page Component
+ * ========================
+ * 
+ * A comprehensive project management interface displaying all user-generated
+ * audio projects. Provides search, sort, and filter capabilities along with
+ * playback and download functionality.
+ * 
+ * @module app/(dashboard)/dashboard/projects/page
+ * 
+ * Features:
+ * - Grid display of all audio projects
+ * - Real-time search filtering by text content
+ * - Sort by newest, oldest, or alphabetical
+ * - Inline audio playback with HTML5 audio element
+ * - Download functionality for WAV files
+ * - Delete projects with confirmation
+ * - Empty state with call-to-action
+ * 
+ * State Management:
+ * - audioProjects: Complete list from database
+ * - filteredProjects: Filtered/sorted subset for display
+ * - searchQuery: Current search term
+ * - sortBy: Current sort order ('newest' | 'oldest' | 'name')
+ * 
+ * @see {@link getUserAudioProjects} - Server action for fetching projects
+ * @see {@link deleteAudioProject} - Server action for project deletion
+ */
 "use client";
 
 import { RedirectToSignIn, SignedIn } from "@daveyplate/better-auth-ui";
-
 import {
   Loader2,
   Search,
@@ -11,20 +38,22 @@ import {
   Download,
   Plus,
 } from "lucide-react";
-
 import { authClient } from "~/lib/auth-client";
-
 import { useEffect, useState } from "react";
-
 import { getUserAudioProjects, deleteAudioProject } from "~/actions/tts";
-
 import { Card, CardContent } from "~/components/ui/card";
-
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-
 import { useRouter } from "next/navigation";
 
+// =============================================================================
+// TYPE DEFINITIONS
+// =============================================================================
+
+/**
+ * Audio project data structure from database.
+ * Represents a single TTS generation with all metadata.
+ */
 interface AudioProject {
   id: string;
   name: string | null;
@@ -40,26 +69,64 @@ interface AudioProject {
   updatedAt: Date;
 }
 
+/**
+ * Available sort options for project listing.
+ * @type {'newest' | 'oldest' | 'name'}
+ */
 type SortBy = "newest" | "oldest" | "name";
 
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
+
+/**
+ * Projects - Audio project management interface.
+ * 
+ * Displays all user's audio projects with search, sort, and CRUD operations.
+ * 
+ * @returns {JSX.Element} The projects management UI
+ */
 export default function Projects() {
+  // ---------------------------------------------------------------------------
+  // State Management
+  // ---------------------------------------------------------------------------
+  
+  /** Loading state for initial data fetch */
   const [isLoading, setIsLoading] = useState(true);
+  
+  /** Complete list of user's audio projects */
   const [audioProjects, setAudioProjects] = useState<AudioProject[]>([]);
+  
+  /** Filtered and sorted projects for display */
   const [filteredProjects, setFilteredProjects] = useState<AudioProject[]>([]);
+  
+  /** Current search query string */
   const [searchQuery, setSearchQuery] = useState("");
+  
+  /** Current sort order */
   const [sortBy, setSortBy] = useState<SortBy>("newest");
+  
+  /** Next.js router for navigation */
   const router = useRouter();
 
+  // ---------------------------------------------------------------------------
+  // Data Fetching
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Initialize projects data on component mount.
+   * Fetches user session and audio projects in parallel.
+   */
   useEffect(() => {
     const initializeProjects = async () => {
       try {
-        // Fetch session and projects in parallel
+        // Parallel fetch for session validation and project data
         const [, projectsResult] = await Promise.all([
           authClient.getSession(),
           getUserAudioProjects(),
         ]);
 
-        // Set audio projects
+        // Update state with fetched projects
         if (projectsResult.success && projectsResult.audioProjects) {
           setAudioProjects(projectsResult.audioProjects);
           setFilteredProjects(projectsResult.audioProjects);
@@ -74,10 +141,21 @@ export default function Projects() {
     void initializeProjects();
   }, []);
 
+  // ---------------------------------------------------------------------------
+  // Filtering & Sorting
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Apply search filter and sort order whenever dependencies change.
+   * Filters by text content and sorts according to selected order.
+   */
   useEffect(() => {
+    // Filter projects by search query (case-insensitive)
     let filtered = audioProjects.filter((project) =>
       project.text.toLowerCase().includes(searchQuery.toLowerCase()),
     );
+    
+    // Apply sort order
     switch (sortBy) {
       case "newest":
         filtered = filtered.sort(

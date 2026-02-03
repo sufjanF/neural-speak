@@ -81,9 +81,9 @@ export default function DemoSection() {
   /**
    * Handles audio playback toggle
    * @param id - Sample identifier
-   * @param audioUrl - URL of the audio file
+   * @param _audioUrl - URL of the audio file (unused, retained for API consistency)
    */
-  const handlePlay = (id: string, audioUrl: string) => {
+  const handlePlay = (id: string, _audioUrl: string) => {
     // Toggle off if already playing
     if (playingId === id) {
       const audio = document.getElementById(id) as HTMLAudioElement;

@@ -1,18 +1,9 @@
-/**
- * Mobile Detection Hook
- * ---------------------
- * Detects if the viewport is below the mobile breakpoint.
- */
-
 import * as React from "react";
 
 const MOBILE_BREAKPOINT = 768;
 
-/**
- * Hook to detect mobile viewport.
- * @returns true if viewport width is below 768px
- */
-export function useIsMobile() {
+/** Hook to detect mobile viewport using matchMedia API */
+export function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined);
 
   React.useEffect(() => {

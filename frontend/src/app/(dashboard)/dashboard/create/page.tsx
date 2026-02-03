@@ -1,8 +1,36 @@
 /**
- * Create Page - Text-to-Speech Generator
- * ---------------------------------------
- * Main TTS creation interface with voice selection,
- * language options, and audio generation controls.
+ * TTS Creation Page Component
+ * ============================
+ * 
+ * The primary interface for text-to-speech generation. This page provides
+ * a comprehensive UI for creating speech audio with customizable voice,
+ * language, and expression parameters.
+ * 
+ * @module app/(dashboard)/dashboard/create/page
+ * 
+ * Features:
+ * - Text input with character counting
+ * - Voice selection (default voices + user-uploaded voices)
+ * - 24 language support with flag indicators
+ * - Emotional expression control (exaggeration slider)
+ * - Speech pacing control (cfg_weight slider)
+ * - Custom voice upload (max 10MB audio files)
+ * - Real-time audio playback and download
+ * - Generation history with recent audio projects
+ * 
+ * Component Architecture:
+ * - SpeechSettings: Left panel with voice/language controls
+ * - TextInput: Main text area with audio player
+ * - AudioHistory: Recent generations grid below
+ * 
+ * State Management:
+ * - Form state: text, selectedLanguage, selectedVoice, exaggeration, cfgWeight
+ * - Loading states: isLoading, isGenerating, isUploadingVoice
+ * - Audio state: generatedAudios, currentAudio, userUploadedVoices
+ * 
+ * @see {@link SpeechSettings} - Voice and language settings component
+ * @see {@link TextInput} - Text input with audio player component
+ * @see {@link AudioHistory} - Recent generations display component
  */
 "use client";
 
@@ -27,11 +55,15 @@ import SpeechSettings from "~/components/create/speech-settings";
 import TextInput from "~/components/create/text-input";
 import AudioHistory from '~/components/create/audio-history';
 
-/* ============================================================================
-   CONSTANTS
-   ============================================================================ */
+// =============================================================================
+// CONSTANTS
+// =============================================================================
 
-/** Supported languages for TTS generation */
+/**
+ * Supported languages for TTS generation.
+ * Each language includes an ISO code, display name, and flag emoji.
+ * The Chatterbox multilingual model supports all listed languages.
+ */
 const LANGUAGES: Language[] = [
   { code: "en", name: "English", flag: "🇺🇸" },
   { code: "es", name: "Spanish", flag: "🇪🇸" },
@@ -58,50 +90,103 @@ const LANGUAGES: Language[] = [
   { code: "sw", name: "Swahili", flag: "🇰🇪" },
 ] as const;
 
-/** Default voice samples available to all users */
+/**
+ * Default voice samples available to all users.
+ * These are pre-loaded voices stored in S3 that don't require user upload.
+ * Voice files should be clear, 10-30 second samples for best cloning results.
+ * 
+ * Note: s3_key paths must match the actual file locations in the S3 bucket.
+ */
 const VOICE_FILES: VoiceFile[] = [
-  { name: "Michael", s3_key: "samples/voices/Michael.wav" },
+  { name: "Conan (Male, Expressive)", s3_key: "samples/voices/network_conan.wav" },
+  { name: "Sarah (Female, Friendly)", s3_key: "samples/voices/friendly-female.wav" },
+  { name: "Stewie (Character Clone)", s3_key: "samples/voices/duff_stewie.wav" },
+  { name: "French Speaker", s3_key: "samples/voices/french.wav" },
+  { name: "Hindi Speaker", s3_key: "samples/voices/hindi.wav" },
+  { name: "Japanese Speaker", s3_key: "samples/voices/japanese.wav" },
+  { name: "Spanish Speaker", s3_key: "samples/voices/spanish.wav" },
 ] as const;
 
-/** Maximum audio history items to display */
+/** Maximum number of audio items to display in history */
 const MAX_AUDIO_HISTORY = 20;
 
-/** Maximum voice file size (10MB) */
+/** Maximum voice file size for uploads (10MB in bytes) */
 const MAX_VOICE_FILE_SIZE = 10 * 1024 * 1024;
 
-/* ============================================================================
-   MAIN COMPONENT
-   ============================================================================ */
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
 
 /**
- * CreatePage - TTS generation interface
- * Handles voice selection, text input, and audio generation.
+ * CreatePage - Main TTS generation interface.
+ * 
+ * This client component provides the primary interface for generating
+ * text-to-speech audio. It manages form state, handles API calls,
+ * and coordinates between child components.
+ * 
+ * @returns {JSX.Element} The TTS creation interface
  */
 export default function CreatePage() {
   const router = useRouter();
   
-  // Loading states
+  // ---------------------------------------------------------------------------
+  // Loading States
+  // ---------------------------------------------------------------------------
+  
+  /** Initial page load state */
   const [isLoading, setIsLoading] = useState(true);
+  
+  /** Speech generation in progress */
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  /** Voice file upload in progress */
   const [isUploadingVoice, setIsUploadingVoice] = useState(false);
   
-  // Form state
+  // ---------------------------------------------------------------------------
+  // Form State
+  // ---------------------------------------------------------------------------
+  
+  /** Text content to convert to speech */
   const [text, setText] = useState("");
+  
+  /** Selected language ISO code */
   const [selectedLanguage, setSelectedLanguage] = useState("en");
+  
+  /** Selected voice S3 key */
   const [selectedVoice, setSelectedVoice] = useState(
     VOICE_FILES[0]?.s3_key ?? "samples/voices/Michael.wav",
   );
+  
+  /** Emotional expression intensity (0.0 to 1.0) */
   const [exaggeration, setExaggeration] = useState(0.5);
+  
+  /** Speech pacing control (0.0 to 1.0) */
   const [cfgWeight, setCfgWeight] = useState(0.5);
   
-  // Audio state
+  // ---------------------------------------------------------------------------
+  // Audio State
+  // ---------------------------------------------------------------------------
+  
+  /** Array of previously generated audio */
   const [generatedAudios, setGeneratedAudios] = useState<GeneratedAudio[]>([]);
+  
+  /** Currently playing/displayed audio */
   const [currentAudio, setCurrentAudio] = useState<GeneratedAudio | null>(null);
+  
+  /** User's uploaded custom voices */
   const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>([]);
   
+  /** Reference to audio element for playback control */
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  /** Fetch user's uploaded voice samples */
+  // ---------------------------------------------------------------------------
+  // Data Fetching
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Fetch user's uploaded voice samples from the server.
+   * Updates the userUploadedVoices state with the result.
+   */
   const fetchUserUploadedVoices = async () => {
     const result = await getUserUploadedVoices();
     if (result.success) {
@@ -109,30 +194,52 @@ export default function CreatePage() {
     }
   };
 
-  // Initialize data on mount
+  /**
+   * Initialize page data on component mount.
+   * Fetches session, existing projects, and uploaded voices in parallel.
+   */
   useEffect(() => {
     const initializeData = async () => {
       try {
+        // Parallel fetch for optimal loading time
         const [, projectsResult, voicesResult] = await Promise.all([
           authClient.getSession(),
           getUserAudioProjects(),
           getUserUploadedVoices(),
         ]);
         
-        // Map existing projects to audio format
-        if (projectsResult.success && projectsResult.audioProjects) {
-          const mappedProjects = projectsResult.audioProjects.map((project) => ({
-            s3_key: project.s3Key,
-            audioUrl: project.audioUrl,
-            text: project.text,
-            language: project.language,
-            timestamp: new Date(project.createdAt),
-          }));
-          setGeneratedAudios(mappedProjects);
-        }
-
+        // Get user uploaded voices for voice name lookup
+        const uploadedVoices = voicesResult.success ? voicesResult.voices : [];
+        
+        // Set user's uploaded voices for voice selection
         if (voicesResult.success) {
           setUserUploadedVoices(voicesResult.voices);
+        }
+        
+        // Map existing projects to the GeneratedAudio format for history display
+        if (projectsResult.success && projectsResult.audioProjects) {
+          // Combine all voices for name lookup
+          const allVoices = [
+            ...uploadedVoices.map(v => ({ name: v.name, s3_key: v.s3Key })),
+            ...VOICE_FILES
+          ];
+          
+          const mappedProjects = projectsResult.audioProjects.map((project) => {
+            // Find voice name from voiceS3key
+            const voiceName = allVoices.find(v => v.s3_key === project.voiceS3key)?.name ?? "Custom Voice";
+            
+            return {
+              s3_key: project.s3Key,
+              audioUrl: project.audioUrl,
+              text: project.text,
+              language: project.language,
+              timestamp: new Date(project.createdAt),
+              voiceName: voiceName,
+              exaggeration: project.exaggeration,
+              cfgWeight: project.cfgWeight,
+            };
+          });
+          setGeneratedAudios(mappedProjects);
         }
       } catch (error) {
         console.error("Error initializing data:", error);
@@ -144,10 +251,16 @@ export default function CreatePage() {
     void initializeData();
   }, []);
 
+  // ---------------------------------------------------------------------------
+  // Event Handlers
+  // ---------------------------------------------------------------------------
+
   /**
-   * Generate TTS audio from text input
+   * Generate TTS audio from the current text input.
+   * Calls the server action and updates state with the result.
    */
   const generateSpeech = async () => {
+    // Validate text input
     if (!text.trim()) {
       toast.error("Please enter some text!");
       return;
@@ -155,6 +268,7 @@ export default function CreatePage() {
     
     setIsGenerating(true);
     try {
+      // Call server action with current form state
       const result = await generateSpeechAction({
         text: text,
         voice_S3_key: selectedVoice,
@@ -167,20 +281,30 @@ export default function CreatePage() {
         throw new Error(result.error ?? "Generation failed");
       }
 
+      // Refresh router cache to update credit display
       router.refresh();
 
+      // Get voice name for display
+      const allVoices = [...userUploadedVoices.map(v => ({ name: v.name, s3_key: v.s3Key })), ...VOICE_FILES];
+      const voiceName = allVoices.find(v => v.s3_key === selectedVoice)?.name ?? "Unknown Voice";
+
+      // Create new audio object for state
       const newAudio: GeneratedAudio = {
         s3_key: result.s3_key,
         audioUrl: result.audioUrl,
         text: text,
         language: selectedLanguage,
         timestamp: new Date(),
+        voiceName: voiceName,
+        exaggeration: exaggeration,
+        cfgWeight: cfgWeight,
       };
 
+      // Update current audio and prepend to history
       setCurrentAudio(newAudio);
       setGeneratedAudios([newAudio, ...generatedAudios].slice(0, MAX_AUDIO_HISTORY));
 
-      // Auto-play the generated audio
+      // Auto-play the generated audio with slight delay for DOM update
       setTimeout(() => {
         if (audioRef.current) {
           audioRef.current.load();

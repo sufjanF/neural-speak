@@ -1,16 +1,43 @@
 /**
- * Auth Layout
- * -----------
- * Split-screen authentication layout with branded left panel
- * and auth form on the right.
+ * Authentication Layout Component
+ * ================================
+ * 
+ * A split-screen authentication layout that provides a premium,
+ * branded experience for sign-in, sign-up, and password reset flows.
+ * 
+ * @module app/(auth)/layout
+ * 
+ * Design:
+ * - Left panel: Branded experience with animated gradients and feature highlights
+ * - Right panel: Clean authentication form container
+ * - Responsive: Full-width form on mobile, split-screen on desktop (lg+)
+ * 
+ * Visual Elements:
+ * - Animated gradient orbs with staggered pulse animations
+ * - Grid pattern overlay for depth
+ * - Feature cards showcasing key product capabilities
+ * - Gradient accent border at bottom
+ * 
+ * This layout wraps all routes under the (auth) route group,
+ * providing consistent branding across authentication flows.
+ * 
+ * @see {@link https://nextjs.org/docs/app/building-your-application/routing/route-groups}
  */
+
 import type { ReactNode } from "react";
 import { Providers } from "~/components/providers";
 import { Mic, Zap, Globe2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "~/components/ui/logo";
 
-/** Feature highlights for the branded panel */
+// =============================================================================
+// CONSTANTS
+// =============================================================================
+
+/**
+ * Feature highlights displayed on the branded left panel.
+ * Each feature includes an icon, title, description, and color scheme.
+ */
 const AUTH_FEATURES = [
   {
     icon: Mic,

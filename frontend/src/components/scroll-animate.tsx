@@ -1,17 +1,57 @@
+/**
+ * @fileoverview Scroll-Triggered Animation Component
+ * Uses Intersection Observer for performant scroll-based animations.
+ */
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+type AnimationType = "fade-up" | "fade-down" | "fade-left" | "fade-right" | "zoom" | "flip";
+
 interface ScrollAnimateProps {
   children: ReactNode;
   className?: string;
-  animation?: "fade-up" | "fade-down" | "fade-left" | "fade-right" | "zoom" | "flip";
+  animation?: AnimationType;
   delay?: number;
   duration?: number;
   threshold?: number;
   once?: boolean;
 }
 
+interface AnimationState {
+  opacity: number;
+  transform: string;
+}
+
+/** Animation presets for each supported animation type */
+const ANIMATIONS: Record<AnimationType, { hidden: AnimationState; visible: AnimationState }> = {
+  "fade-up": {
+    hidden: { opacity: 0, transform: "translateY(60px)" },
+    visible: { opacity: 1, transform: "translateY(0)" },
+  },
+  "fade-down": {
+    hidden: { opacity: 0, transform: "translateY(-60px)" },
+    visible: { opacity: 1, transform: "translateY(0)" },
+  },
+  "fade-left": {
+    hidden: { opacity: 0, transform: "translateX(60px)" },
+    visible: { opacity: 1, transform: "translateX(0)" },
+  },
+  "fade-right": {
+    hidden: { opacity: 0, transform: "translateX(-60px)" },
+    visible: { opacity: 1, transform: "translateX(0)" },
+  },
+  "zoom": {
+    hidden: { opacity: 0, transform: "scale(0.9)" },
+    visible: { opacity: 1, transform: "scale(1)" },
+  },
+  "flip": {
+    hidden: { opacity: 0, transform: "perspective(1000px) rotateX(20deg)" },
+    visible: { opacity: 1, transform: "perspective(1000px) rotateX(0deg)" },
+  },
+};
+
+/** Scroll-triggered animation wrapper using Intersection Observer */
 export function ScrollAnimate({
   children,
   className = "",
@@ -32,73 +72,34 @@ export function ScrollAnimate({
       ([entry]) => {
         if (entry?.isIntersecting) {
           setIsVisible(true);
-          if (once) {
-            observer.unobserve(element);
-          }
+          if (once) observer.unobserve(element);
         } else if (!once) {
           setIsVisible(false);
         }
       },
-      {
-        threshold,
-        rootMargin: "0px 0px -50px 0px",
-      }
+      { threshold, rootMargin: "0px 0px -50px 0px" }
     );
 
     observer.observe(element);
-
     return () => observer.disconnect();
   }, [threshold, once]);
 
-  const getAnimationStyles = () => {
-    const baseTransition = `all ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`;
-    
-    const animations = {
-      "fade-up": {
-        hidden: { opacity: 0, transform: "translateY(60px)" },
-        visible: { opacity: 1, transform: "translateY(0)" },
-      },
-      "fade-down": {
-        hidden: { opacity: 0, transform: "translateY(-60px)" },
-        visible: { opacity: 1, transform: "translateY(0)" },
-      },
-      "fade-left": {
-        hidden: { opacity: 0, transform: "translateX(60px)" },
-        visible: { opacity: 1, transform: "translateX(0)" },
-      },
-      "fade-right": {
-        hidden: { opacity: 0, transform: "translateX(-60px)" },
-        visible: { opacity: 1, transform: "translateX(0)" },
-      },
-      "zoom": {
-        hidden: { opacity: 0, transform: "scale(0.9)" },
-        visible: { opacity: 1, transform: "scale(1)" },
-      },
-      "flip": {
-        hidden: { opacity: 0, transform: "perspective(1000px) rotateX(20deg)" },
-        visible: { opacity: 1, transform: "perspective(1000px) rotateX(0deg)" },
-      },
-    };
-
+  const getAnimationStyles = (): React.CSSProperties => {
     const state = isVisible ? "visible" : "hidden";
     return {
-      ...animations[animation][state],
-      transition: baseTransition,
+      ...ANIMATIONS[animation][state],
+      transition: `all ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
     };
   };
 
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={getAnimationStyles()}
-    >
+    <div ref={ref} className={className} style={getAnimationStyles()}>
       {children}
     </div>
   );
 }
 
-// Staggered children animation
+/** Staggered children animation with configurable delays */
 interface ScrollStaggerProps {
   children: ReactNode[];
   className?: string;

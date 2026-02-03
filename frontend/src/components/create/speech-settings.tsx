@@ -1,13 +1,68 @@
+/**
+ * Speech Settings Component
+ * ==========================
+ * 
+ * A comprehensive settings panel for configuring TTS generation parameters.
+ * Provides controls for language selection, voice selection, expression
+ * intensity, speech pacing, and custom voice upload.
+ * 
+ * @module components/create/speech-settings
+ * 
+ * Features:
+ * - Language selector with 24 supported languages
+ * - Voice selector combining default and user-uploaded voices
+ * - Custom voice upload with drag-and-drop support
+ * - Emotional expression slider (exaggeration parameter)
+ * - Speech pacing slider (cfg_weight parameter)
+ * - Generate button with credit cost display
+ * - Loading states for upload and generation
+ * 
+ * Props:
+ * - Controlled form state from parent component
+ * - Callbacks for state updates and actions
+ * - Lists of available languages and voices
+ * 
+ * @example
+ * <SpeechSettings
+ *   languages={LANGUAGES}
+ *   voiceFiles={VOICE_FILES}
+ *   selectedLanguage="en"
+ *   setSelectedLanguage={setSelectedLanguage}
+ *   // ... other props
+ * />
+ */
 "use client";
 
 import { Globe, Volume2, Upload, Settings, Loader2 } from "lucide-react";
-
 import { Card, CardContent } from "~/components/ui/card";
-
 import { Button } from "~/components/ui/button";
-
 import type { Language, VoiceFile, UploadedVoice } from "~/types/tts";
 
+// =============================================================================
+// TYPE DEFINITIONS
+// =============================================================================
+
+/**
+ * Props for the SpeechSettings component.
+ * 
+ * @interface SpeechSettingsProps
+ * @property {Language[]} languages - Available languages for TTS
+ * @property {VoiceFile[]} voiceFiles - Default voice samples
+ * @property {string} selectedLanguage - Currently selected language code
+ * @property {function} setSelectedLanguage - Language selection handler
+ * @property {string} selectedVoice - Currently selected voice S3 key
+ * @property {function} setSelectedVoice - Voice selection handler
+ * @property {number} exaggeration - Emotional intensity (0-1)
+ * @property {function} setExaggeration - Exaggeration change handler
+ * @property {number} cfgWeight - Speech pacing control (0-1)
+ * @property {function} setCfgWeight - CFG weight change handler
+ * @property {UploadedVoice[]} userUploadedVoices - User's custom voices
+ * @property {boolean} isUploadingVoice - Voice upload in progress
+ * @property {function} handleVoiceUpload - File input change handler
+ * @property {string} text - Current text input for credit calculation
+ * @property {boolean} isGenerating - Generation in progress
+ * @property {function} onGenerate - Generate button click handler
+ */
 interface SpeechSettingsProps {
   languages: Language[];
   voiceFiles: VoiceFile[];
@@ -27,6 +82,19 @@ interface SpeechSettingsProps {
   onGenerate: () => void;
 }
 
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
+
+/**
+ * SpeechSettings - TTS configuration panel.
+ * 
+ * Renders a card with all speech generation settings including
+ * language, voice, expression, and pacing controls.
+ * 
+ * @param {SpeechSettingsProps} props - Component props
+ * @returns {JSX.Element} The settings panel UI
+ */
 export default function SpeechSettings({
   languages,
   voiceFiles,
@@ -45,10 +113,13 @@ export default function SpeechSettings({
   isGenerating,
   onGenerate,
 }: SpeechSettingsProps) {
+  // Calculate credits needed based on text length (1 credit per 100 chars, min 1)
   const creditsNeeded = Math.max(1, Math.ceil(text.length / 100));
+  
   return (
     <Card className="border-border/20 bg-card/50 shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-border/30">
       <CardContent className="p-2 sm:p-3">
+        {/* Section Header */}
         <div className="mb-3 flex items-start justify-between">
           <div>
             <h3 className="mb-0.5 text-sm font-semibold text-foreground">Settings</h3>
@@ -57,7 +128,9 @@ export default function SpeechSettings({
             </p>
           </div>
         </div>
+        
         <div className="space-y-3">
+          {/* Language Selector */}
           <div>
             <label className="mb-1 flex items-center gap-1 text-xs font-medium text-foreground">
               <Globe className="h-3 w-3 text-orange-400" />
@@ -74,7 +147,12 @@ export default function SpeechSettings({
                 </option>
               ))}
             </select>
+            <p className="mt-1 text-[10px] text-muted-foreground/70">
+              Write your text in this language for best results
+            </p>
           </div>
+          
+          {/* Voice Selector */}
           <div>
             <label className="mb-1 flex items-center gap-1 text-xs font-medium text-foreground">
               <Volume2 className="h-3 w-3 text-amber-400" />
@@ -85,13 +163,13 @@ export default function SpeechSettings({
               onChange={(e) => setSelectedVoice(e.target.value)}
               className="w-full rounded-md border border-border/20 bg-muted/30 px-2 py-1.5 text-xs text-foreground transition-all duration-200 focus:border-amber-400/40 focus:outline-none focus:ring-1 focus:ring-amber-400/40"
             >
-              {/* User's uploaded voices */}
+              {/* User's custom uploaded voices (shown first with mic icon) */}
               {userUploadedVoices.map((voice) => (
                 <option key={voice.id} value={voice.s3Key}>
                   🎤 {voice.name}
                 </option>
               ))}
-              {/* Default voices */}
+              {/* Default system voices */}
               {voiceFiles.map((voice) => (
                 <option key={voice.s3_key} value={voice.s3_key}>
                   {voice.name}

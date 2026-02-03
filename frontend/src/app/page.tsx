@@ -177,43 +177,6 @@ function ScrollReveal({
   );
 }
 
-/**
- * StaggerReveal - Animates list items with staggered timing
- * @param children - Array of elements to stagger
- * @param staggerDelay - Delay between each item
- * @param baseDelay - Initial delay before first item
- */
-function StaggerReveal({ 
-  children, 
-  className = "", 
-  staggerDelay = 100,
-  baseDelay = 0
-}: { 
-  children: ReactNode[]; 
-  className?: string; 
-  staggerDelay?: number;
-  baseDelay?: number;
-}) {
-  const { ref, isVisible } = useScrollAnimation();
-  
-  return (
-    <div ref={ref} className={className}>
-      {children.map((child, i) => (
-        <div
-          key={i}
-          style={{
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? "translateY(0)" : "translateY(40px)",
-            transition: `all 700ms cubic-bezier(0.22, 1, 0.36, 1) ${baseDelay + i * staggerDelay}ms`,
-          }}
-        >
-          {child}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 /* ============================================================================
    MAIN PAGE COMPONENT
    ============================================================================ */

@@ -1,8 +1,32 @@
 /**
- * Dashboard Home Page
- * -------------------
- * Main dashboard view displaying user stats, quick actions,
- * and recent audio projects.
+ * Dashboard Home Page Component
+ * ==============================
+ * 
+ * The main dashboard view that serves as the user's home screen after login.
+ * Displays personalized statistics, quick action buttons, and recent audio
+ * projects to provide an overview of their TTS workspace.
+ * 
+ * @module app/(dashboard)/dashboard/page
+ * 
+ * Features:
+ * - Personalized welcome message with user's name
+ * - Statistics grid showing total projects, monthly/weekly activity
+ * - Quick action cards for common tasks
+ * - Recent audio projects list with inline playback
+ * - Loading state with spinner animation
+ * 
+ * Data Flow:
+ * 1. Component mounts and shows loading spinner
+ * 2. Parallel fetch of user session and audio projects
+ * 3. Calculate statistics from project data
+ * 4. Render dashboard with fetched data
+ * 
+ * Authentication:
+ * - Uses RedirectToSignIn for unauthenticated users
+ * - SignedIn wrapper ensures content only shows for logged-in users
+ * 
+ * @see {@link getUserAudioProjects} - Server action for fetching projects
+ * @see {@link authClient} - Authentication client for session management
  */
 "use client";
 
@@ -25,11 +49,27 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "next/navigation";
 
-/* ============================================================================
-   TYPE DEFINITIONS
-   ============================================================================ */
+// =============================================================================
+// TYPE DEFINITIONS
+// =============================================================================
 
-/** Audio project data structure */
+/**
+ * Represents a single audio project with all associated metadata.
+ * 
+ * @interface AudioProject
+ * @property {string} id - Unique identifier for the project
+ * @property {string | null} name - Optional user-defined project name
+ * @property {string} text - The input text that was converted to speech
+ * @property {string} audioUrl - Public URL to access the generated audio
+ * @property {string} s3Key - S3 object key for the audio file
+ * @property {string} language - ISO language code used for generation
+ * @property {string} voiceS3key - S3 key of the voice sample used
+ * @property {number} exaggeration - Emotional intensity setting (0-1)
+ * @property {number} cfgWeight - Classifier-free guidance weight (0-1)
+ * @property {string} userId - ID of the user who created the project
+ * @property {Date} createdAt - Timestamp when project was created
+ * @property {Date} updatedAt - Timestamp of last modification
+ */
 interface AudioProject {
   id: string;
   name: string | null;
@@ -45,25 +85,42 @@ interface AudioProject {
   updatedAt: Date;
 }
 
-/** Aggregated user statistics */
+/**
+ * Aggregated statistics calculated from user's audio projects.
+ * 
+ * @interface UserStats
+ * @property {number} totalAudioProjects - Total count of all projects
+ * @property {number} thisMonth - Projects created in current month
+ * @property {number} thisWeek - Projects created in last 7 days
+ */
 interface UserStats {
   totalAudioProjects: number;
   thisMonth: number;
   thisWeek: number;
 }
 
-/* ============================================================================
-   HELPER FUNCTIONS
-   ============================================================================ */
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
 
 /**
- * Calculate user statistics from audio projects
- * @param audios - Array of audio projects
- * @returns Computed statistics object
+ * Calculate user statistics from an array of audio projects.
+ * 
+ * Computes total count and time-based activity metrics by filtering
+ * projects based on their creation timestamps.
+ * 
+ * @param {AudioProject[]} audios - Array of user's audio projects
+ * @returns {UserStats} Computed statistics object
+ * 
+ * @example
+ * const stats = calculateStats(audioProjects);
+ * console.log(`Created ${stats.thisWeek} projects this week`);
  */
 function calculateStats(audios: AudioProject[]): UserStats {
   const now = new Date();
+  // First day of current month
   const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  // 7 days ago from now
   const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
   return {
@@ -73,44 +130,74 @@ function calculateStats(audios: AudioProject[]): UserStats {
   };
 }
 
-/* ============================================================================
-   MAIN COMPONENT
-   ============================================================================ */
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
 
 /**
- * Dashboard - Main user dashboard with stats and recent projects
+ * Dashboard - Main user dashboard displaying stats and recent projects.
+ * 
+ * This client component serves as the home page for authenticated users.
+ * It fetches user data and audio projects on mount, then renders a
+ * comprehensive overview of the user's TTS workspace.
+ * 
+ * @returns {JSX.Element} The dashboard UI with stats and project list
  */
 export default function Dashboard() {
+  // ---------------------------------------------------------------------------
+  // State Management
+  // ---------------------------------------------------------------------------
+  
+  /** Loading state for initial data fetch */
   const [isLoading, setIsLoading] = useState(true);
+  
+  /** Array of user's audio projects */
   const [audioProjects, setAudioProjects] = useState<AudioProject[]>([]);
+  
+  /** Computed statistics from audio projects */
   const [userStats, setUserStats] = useState<UserStats>({
     totalAudioProjects: 0,
     thisMonth: 0,
     thisWeek: 0,
   });
+  
+  /** Current user information from session */
   const [user, setUser] = useState<{
     name?: string;
     createdAt?: string | Date;
   } | null>(null);
+  
+  /** Next.js router for programmatic navigation */
   const router = useRouter();
 
-  // Fetch user data and audio projects on mount
+  // ---------------------------------------------------------------------------
+  // Data Fetching
+  // ---------------------------------------------------------------------------
+  
+  /**
+   * Initialize dashboard data on component mount.
+   * Fetches user session and audio projects in parallel for efficiency.
+   */
   useEffect(() => {
     const initializeDashboard = async () => {
       try {
+        // Parallel fetch for optimal loading time
         const [sessionResult, audioResult] = await Promise.all([
           authClient.getSession(),
           getUserAudioProjects(),
         ]);
 
+        // Update user state from session
         if (sessionResult?.data?.user) {
           setUser(sessionResult.data.user);
         }
 
+        // Update audio projects state
         if (audioResult.success && audioResult.audioProjects) {
           setAudioProjects(audioResult.audioProjects);
         }
 
+        // Calculate and update statistics
         const audios = audioResult.audioProjects ?? [];
         setUserStats(calculateStats(audios));
       } catch (error) {
@@ -123,7 +210,10 @@ export default function Dashboard() {
     void initializeDashboard();
   }, []);
 
-  // Loading state
+  // ---------------------------------------------------------------------------
+  // Loading State
+  // ---------------------------------------------------------------------------
+  
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -137,11 +227,19 @@ export default function Dashboard() {
     );
   }
 
+  // ---------------------------------------------------------------------------
+  // Main Render
+  // ---------------------------------------------------------------------------
+
   return (
     <>
+      {/* Redirect unauthenticated users to sign-in */}
       <RedirectToSignIn />
+      
+      {/* Only render content for authenticated users */}
       <SignedIn>
         <div className="space-y-5">
+          {/* Welcome Header */}
           <div className="space-y-1.5">
             <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Welcome back{user?.name ? `, ${user.name}` : ""}!

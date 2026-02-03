@@ -1,35 +1,20 @@
 /**
- * Neural Speak Logo Component
- * ---------------------------
- * Reusable SVG logo with neural network + waveform design.
- * Use throughout the app for consistent branding.
+ * Neural Speak Logo - SVG logo with neural network waveform design.
  */
 
 interface LogoProps {
-  /** Logo width/height in pixels or tailwind class */
   size?: "sm" | "md" | "lg";
-  /** Optional additional CSS classes */
   className?: string;
-  /** Show text label alongside logo */
   showText?: boolean;
-  /** Custom text class for the label */
   textClass?: string;
 }
 
-/** Size mapping for logo dimensions */
 const sizeMap = {
   sm: "w-5 h-5",
   md: "w-7 h-7",
   lg: "w-10 h-10",
 };
 
-/**
- * Logo - Renders the Neural Speak brand logo
- * @param size - Logo size variant (sm, md, lg)
- * @param className - Additional container classes
- * @param showText - Whether to display "Neural Speak" text
- * @param textClass - Custom styling for the text label
- */
 export function Logo({ 
   size = "md", 
   className = "", 
@@ -45,7 +30,6 @@ export function Logo({
           className={sizeMap[size]}
           aria-label="Neural Speak Logo"
         >
-          {/* Outer neural ring - dashed circle representing connectivity */}
           <circle 
             cx="16" 
             cy="16" 
@@ -55,7 +39,6 @@ export function Logo({
             strokeDasharray="4 2" 
             className="opacity-40" 
           />
-          {/* Central waveform - audio visualization path */}
           <path 
             d="M8 16 L11 12 L14 18 L17 10 L20 20 L23 14 L26 16" 
             stroke="url(#logoGradient)" 
@@ -63,7 +46,6 @@ export function Logo({
             strokeLinecap="round" 
             strokeLinejoin="round" 
           />
-          {/* Neural nodes - input/output markers */}
           <circle cx="8" cy="16" r="2" fill="#94a3b8" />
           <circle cx="17" cy="10" r="1.5" fill="#cbd5e1" />
           <circle cx="20" cy="20" r="1.5" fill="#cbd5e1" />
