@@ -559,12 +559,11 @@ export default function HomePage() {
                   </div>
                 </div>
                 
-                {/* Labels - positioned within container bounds */}
-                <div className="absolute inset-x-0 bottom-[-28px] flex items-center justify-between px-2 lg:px-4 pointer-events-none">
-                  <span className="text-[9px] lg:text-[10px] font-mono text-cyan-400/60 tracking-wider uppercase hidden lg:block whitespace-nowrap">Text Input</span>
-                  <span className="text-[9px] lg:text-[10px] font-mono text-slate-400/80 tracking-wider uppercase hidden lg:block whitespace-nowrap">Neural Layers</span>
-                  <span className="text-[9px] lg:text-[10px] font-mono text-emerald-400/60 tracking-wider uppercase hidden lg:block whitespace-nowrap">Voice Output</span>
-                </div>
+                {/* Labels - individually positioned relative to animation elements */}
+                <span className="absolute left-[6%] top-[90%] text-[9px] lg:text-[10px] font-mono text-cyan-400/60 tracking-wider uppercase whitespace-nowrap pointer-events-none -translate-x-1/4">Text Input</span>
+                <span className="absolute left-[39%] top-[90%] text-[9px] lg:text-[10px] font-mono text-slate-400/80 tracking-wider uppercase whitespace-nowrap pointer-events-none -translate-x-1/2">Neural Layers</span>
+                {/* Voice Output label - positioned below waveform */}
+                <span className="absolute right-[3%] top-[58%] text-[9px] lg:text-[10px] font-mono text-emerald-400/60 tracking-wider uppercase whitespace-nowrap pointer-events-none">Voice Output</span>
               </div>
             </div>
           </div>
