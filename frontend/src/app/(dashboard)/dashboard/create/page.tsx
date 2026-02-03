@@ -54,6 +54,7 @@ import type {
 import SpeechSettings from "~/components/create/speech-settings";
 import TextInput from "~/components/create/text-input";
 import AudioHistory from '~/components/create/audio-history';
+import type { AudioPlayerRef } from "~/components/ui/audio-player";
 
 // =============================================================================
 // CONSTANTS
@@ -177,7 +178,7 @@ export default function CreatePage() {
   const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>([]);
   
   /** Reference to audio element for playback control */
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<AudioPlayerRef>(null);
 
   // ---------------------------------------------------------------------------
   // Data Fetching
@@ -308,9 +309,7 @@ export default function CreatePage() {
       setTimeout(() => {
         if (audioRef.current) {
           audioRef.current.load();
-          audioRef.current.play().catch((error) => {
-            console.error("Autoplay failed:", error);
-          });
+          void audioRef.current.play();
         }
       }, 100);
 
@@ -332,9 +331,7 @@ export default function CreatePage() {
     setTimeout(() => {
       if (audioRef.current) {
         audioRef.current.load();
-        audioRef.current.play().catch((error) => {
-          console.error("Autoplay failed:", error);
-        });
+        void audioRef.current.play();
       }
     }, 100);
     toast.info("Now playing...");

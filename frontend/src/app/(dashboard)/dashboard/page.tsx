@@ -47,6 +47,7 @@ import { useEffect, useState } from "react";
 import { getUserAudioProjects } from "~/actions/tts";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
+import AudioPlayer from "~/components/ui/audio-player";
 import { useRouter } from "next/navigation";
 
 // =============================================================================
@@ -422,41 +423,36 @@ export default function Dashboard() {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   {audioProjects.slice(0, 5).map((audio) => (
                     <div
                       key={audio.id}
-                      className="group flex items-center gap-3 rounded-sm border border-border/20 bg-muted/10 p-3 transition-all duration-200 hover:border-violet-500/20 hover:bg-muted/20"
+                      className="group rounded-lg border border-border/20 bg-muted/10 p-3 transition-all duration-200 hover:border-violet-500/30 hover:bg-muted/20 hover:shadow-md hover:shadow-violet-500/5 sm:p-4"
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm gradient-shift">
-                        <Music className="h-5 w-5 text-white" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="truncate text-sm font-medium text-foreground">
-                          {audio.name ??
-                            audio.text.substring(0, 50) +
-                              (audio.text.length > 50 ? "..." : "")}
-                        </h4>
-                        <div className="mt-0.5 flex items-center gap-2">
-                          <p className="text-xs text-muted-foreground">
-                            {audio.language.toUpperCase()}
-                          </p>
-                          <span className="text-xs text-muted-foreground">
-                            •
-                          </span>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(audio.createdAt).toLocaleDateString()}
-                          </p>
+                      {/* Top row: Icon, title, metadata */}
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg gradient-shift shadow-md">
+                          <Music className="h-5 w-5 text-white" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="line-clamp-2 text-sm font-medium leading-snug text-foreground">
+                            {audio.name ??
+                              audio.text.substring(0, 80) +
+                                (audio.text.length > 80 ? "..." : "")}
+                          </h4>
+                          <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                            <span className="rounded-full bg-violet-500/10 px-2 py-0.5 text-[10px] font-medium text-violet-400">
+                              {audio.language.toUpperCase()}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">
+                              {new Date(audio.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className="shrink-0">
-                        <audio
-                          src={audio.audioUrl}
-                          controls
-                          className="h-8"
-                          style={{ width: "180px" }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
+                      {/* Bottom row: Audio player */}
+                      <div className="mt-3 w-full" onClick={(e) => e.stopPropagation()}>
+                        <AudioPlayer src={audio.audioUrl} />
                       </div>
                     </div>
                   ))}

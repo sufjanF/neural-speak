@@ -32,9 +32,10 @@
  */
 "use client";
 
-import { X, Download } from "lucide-react";
+import { X, Download, Music } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
+import AudioPlayer, { type AudioPlayerRef } from "~/components/ui/audio-player";
 import type { GeneratedAudio } from "~/types/tts";
 
 // =============================================================================
@@ -55,7 +56,7 @@ interface TextInputProps {
   text: string;
   setText: (text: string) => void;
   currentAudio: GeneratedAudio | null;
-  audioRef: React.RefObject<HTMLAudioElement | null>;
+  audioRef: React.RefObject<AudioPlayerRef | null>;
   onDownload: (audio: GeneratedAudio) => void;
 }
 
@@ -119,40 +120,44 @@ export default function TextInput({
             )}
           </div>
           
-          {/* Latest Generated Audio Player */}
+          {/* Now Playing Audio Player */}
           {currentAudio && (
-            <div className="rounded-sm border border-violet-400/20 bg-gradient-to-r from-violet-400/10 to-fuchsia-500/10 p-3 transition-all duration-300">
-              <div className="mb-2 flex items-center justify-between">
-                <h4 className="text-xs font-semibold text-violet-300">
-                  Latest Generation
-                </h4>
+            <div className="rounded-lg border border-violet-400/20 bg-gradient-to-r from-violet-400/10 to-fuchsia-500/10 p-3 transition-all duration-300 sm:p-4">
+              <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-shift shadow-md">
+                    <Music className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-violet-300">
+                      {currentAudio.voiceName ?? "Generated Audio"}
+                    </h4>
+                    <p className="text-[10px] text-muted-foreground">
+                      {new Date(currentAudio.timestamp).toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
                 <Button
                   onClick={() => onDownload(currentAudio)}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  className="h-6 gap-1 px-2 text-violet-400 hover:bg-violet-400/10 hover:text-violet-300"
+                  className="h-8 gap-1.5 border-violet-400/30 px-3 text-xs text-violet-400 hover:bg-violet-400/10 hover:text-violet-300"
                 >
-                  <Download className="h-3 w-3" />
-                  <span className="text-xs">Download</span>
+                  <Download className="h-3.5 w-3.5" />
+                  Download WAV
                 </Button>
               </div>
               {/* Text preview (truncated to 100 chars) */}
-              <p className="mb-2 text-xs text-muted-foreground">
-                {currentAudio.text.substring(0, 100)}
-                {currentAudio.text.length > 100 && "..."}
+              <p className="mb-3 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                {currentAudio.text.substring(0, 120)}
+                {currentAudio.text.length > 120 && "..."}
               </p>
               {/* Audio player container */}
-              <div className="rounded-md bg-muted/20 p-2">
-                <audio
-                  ref={audioRef}
-                  controls
-                  className="w-full"
-                  style={{ height: "32px" }}
-                  key={currentAudio.s3_key}
-                >
-                  <source src={currentAudio.audioUrl} type="audio/wav" />
-                </audio>
-              </div>
+              <AudioPlayer
+                ref={audioRef}
+                src={currentAudio.audioUrl}
+                key={currentAudio.s3_key}
+              />
             </div>
           )}
         </div>
