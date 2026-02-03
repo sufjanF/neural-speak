@@ -210,22 +210,25 @@ class TextToSpeechServer:
         return TextToSpeechResponse(s3_Key=s3_key)
     
     def _trim_trailing_silence(self, wav: torch.Tensor, sample_rate: int, 
-                                threshold_db: float = -40.0, 
-                                min_silence_ms: int = 150) -> torch.Tensor:
+                                threshold_db: float = -35.0, 
+                                min_silence_ms: int = 100,
+                                fade_ms: int = 30) -> torch.Tensor:
         """
-        Trim trailing silence and artifacts from audio.
+        Trim trailing silence and artifacts from audio with fade-out.
         
-        Uses energy-based detection to find the end of meaningful audio content
-        and trims excess silence while preserving a small natural tail.
+        Uses energy-based detection to find the end of meaningful audio content,
+        trims excess silence, and applies a smooth fade-out to eliminate any
+        residual artifacts or abrupt cutoffs.
         
         Args:
             wav: Audio tensor of shape (1, samples) or (samples,)
             sample_rate: Audio sample rate in Hz
             threshold_db: Energy threshold in dB below which audio is considered silence
             min_silence_ms: Minimum silence to preserve at end (ms) for natural decay
+            fade_ms: Duration of fade-out in milliseconds
             
         Returns:
-            Trimmed audio tensor
+            Trimmed audio tensor with fade-out applied
         """
         # Ensure 2D tensor
         if wav.dim() == 1:
@@ -262,4 +265,14 @@ class TextToSpeechServer:
         trim_point = (last_voiced_frame + 1) * hop_length + frame_length + min_silence_samples
         trim_point = min(trim_point, len(audio))  # Don't exceed original length
         
-        return wav[:, :trim_point]
+        # Trim the audio
+        trimmed = wav[:, :trim_point].clone()
+        
+        # Apply fade-out to prevent any artifacts at the end
+        fade_samples = int(sample_rate * fade_ms / 1000)
+        if fade_samples > 0 and trimmed.shape[1] > fade_samples:
+            # Create linear fade-out envelope
+            fade_curve = torch.linspace(1.0, 0.0, fade_samples, device=trimmed.device)
+            trimmed[:, -fade_samples:] = trimmed[:, -fade_samples:] * fade_curve
+        
+        return trimmed
